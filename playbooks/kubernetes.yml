@@ -1,0 +1,57 @@
+---
+- name: Install Kubernetes
+  hosts: controllers
+  remote_user: root
+  become: yes
+
+  tasks:
+  - name: apt update
+    apt:
+      update_cache: yes
+
+  - name: apt install docker.io
+    apt:
+      name: docker.io
+      state: present
+  
+  - name: systemctl start docker
+    systemd_service:
+      name: docker
+      state: started
+  
+  - name: systemctl enable docker
+    systemd_service:
+      name: docker
+      enabled: true
+
+  - name: mkdir /etc/apt/keyrings
+    file:
+      path: /etc/apt/keyrings
+      state: directory
+
+  - name: Download https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    ansible.builtin.get_url:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      dest: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+
+  - name: Add kubernetes repo
+    shell: echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+  - name: apt update
+    apt:
+      update_cache: yes
+
+  - name: apt install kubeadm kubelet kubectl
+    apt:
+      name: {{ item }}
+      state: present
+    loop:
+    - kubeadm
+    - kubelet
+    - kubectl
+
+  - name: Disable automatic updates
+    shell: apt-mark hold kubeadm kubelet kubectl
+
+  - name: Check the kubernetes version installed
+    shell: kubeadm version
