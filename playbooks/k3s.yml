@@ -35,3 +35,19 @@
       chart_ref: kubernetes-dashboard/kubernetes-dashboard
       release_namespace: kubernetes-dashboard
       create_namespace: true
+
+  - name: Copy in kubernetes templates for Kubernetes dashboard service account
+    copy:
+      src: "{{ item }}"
+      dest: "{{ item }}"
+    loop:
+      - serviceaccount.yml
+      - clusterrolebinding.yml
+      - secret.yml
+
+  - name: Setup Kubernetes dashboard service account
+    shell: kubectl apply -f {{ item }}
+    loop:
+      - serviceaccount.yml
+      - clusterrolebinding.yml
+      - secret.yml
