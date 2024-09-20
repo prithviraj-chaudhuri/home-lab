@@ -44,6 +44,7 @@
       - serviceaccount.yml
       - clusterrolebinding.yml
       - secret.yml
+      - service.yml
 
   - name: Setup Kubernetes dashboard service account
     shell: kubectl apply -f {{ item }}
@@ -51,3 +52,4 @@
       - serviceaccount.yml
       - clusterrolebinding.yml
       - secret.yml
+      - service.yml
