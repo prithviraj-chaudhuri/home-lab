@@ -7,6 +7,38 @@
     KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
   tasks:
+  - name: Allow everything and enable UFW
+    community.general.ufw:
+      state: enabled
+      policy: allow
+
+  - name: Set logging
+    community.general.ufw:
+      logging: 'on'
+  
+  - name: Enable ports
+    community.general.ufw:
+      rule: limit
+      port: "{{ item }}"
+      proto: tcp
+    loop:
+      - 22
+      - 6443
+      - 31627
+
+  - name: Enable Applications
+    community.general.ufw:
+      rule: allow
+      name: "{{ item }}"
+    loop:
+      - CUPS
+      - OpenSSH
+
+  - name: Deny everything and enable UFW
+    community.general.ufw:
+      state: enabled
+      policy: deny
+
   - name: Install curl
     apt:
       name: curl
