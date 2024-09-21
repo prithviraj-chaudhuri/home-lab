@@ -18,7 +18,7 @@
   
   - name: Enable ports
     community.general.ufw:
-      rule: limit
+      rule: allow
       port: "{{ item }}"
       proto: tcp
     loop:
