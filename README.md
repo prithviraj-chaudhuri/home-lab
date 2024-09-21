@@ -7,6 +7,7 @@ Repositories and scripts for my homelab
 export KUBECONFIG=secrets/k3s.config
 kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
 https://localhost:8443/#/login
+https://10.0.0.163:31627/#/login
 
 ### Get Token
 kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d

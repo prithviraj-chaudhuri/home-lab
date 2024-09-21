@@ -1,0 +1,9 @@
+---
+- name: Uninstall Kubernetes
+  hosts: controllers
+  remote_user: ansible-user
+  become: yes
+
+  tasks:
+    - name: Delete server node
+      shell: /usr/local/bin/k3s-uninstall.sh
