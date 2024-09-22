@@ -1,0 +1,99 @@
+---
+- name: Install Portainer
+  hosts: controllers
+  remote_user: ansible-user
+  become: yes
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+  tasks:
+  - name: Allow everything and enable UFW
+    community.general.ufw:
+      state: enabled
+      policy: allow
+
+  - name: Set logging
+    community.general.ufw:
+      logging: 'on'
+  
+  - name: Enable ports
+    community.general.ufw:
+      rule: allow
+      port: "{{ item }}"
+      proto: tcp
+    loop:
+      - 22
+      - 9443
+
+  - name: Enable Applications
+    community.general.ufw:
+      rule: allow
+      name: "{{ item }}"
+    loop:
+      - CUPS
+      - OpenSSH
+
+  - name: Deny everything and enable UFW
+    community.general.ufw:
+      state: enabled
+      policy: deny
+
+  - name: Delete all conflicting packages
+    ansible.builtin.apt:
+      name: "{{ item }}"
+      state: absent
+    loop:
+      - docker.io
+      - docker-doc
+      - docker-compose
+      - docker-compose-v2
+      - podman-docker
+      - containerd
+
+  - name: Apt update
+    ansible.builtin.apt:
+      update_cache: yes
+
+  - name: Install ca-certificates and curl
+    ansible.builtin.apt: 
+      name: "{{ item }}"
+      state: present
+    loop:
+      - ca-certificates
+      - curl
+
+  - name: Run install commands
+    shell: install -m 0755 -d /etc/apt/keyrings
+
+  - name: Get docker gpg and change mod
+    shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && chmod a+r /etc/apt/keyrings/docker.asc
+
+  - name: Add repo to apt resources
+    shell: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  
+  - name: Apt update
+    ansible.builtin.apt:
+      update_cache: yes
+
+  - name: Install specific version of packages
+    ansible.builtin.apt:
+      name: "{{ item }}"
+      state: present
+      allow_downgrade: yes
+    loop:
+      - docker-ce=5:27.2.0-1~ubuntu.24.04~noble
+      - docker-ce-cli=5:27.2.0-1~ubuntu.24.04~noble
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+
+  - name: Copy TLS Certs
+    copy: 
+      src: portainer/secrets/{{ item }}
+      dest: /home/ansible-user/portainer/secrets/
+    loop:
+      - tls.crt
+      - tls.key
+
+  - name: Setup portainer docker
+    shell: docker run -d -p 9443:9443 --name portainer --restart always  -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data -v /home/ansible-user/portainer/secrets/:/certs portainer/portainer-ce:2.21.1  --sslcert /certs/tls.crt --sslkey /certs/tls.key
