@@ -24,6 +24,9 @@
     loop:
       - 22
       - 9443
+      - 9995
+      - 9967
+      - 9999
 
   - name: Enable Applications
     community.general.ufw:
@@ -87,6 +90,13 @@
       - docker-buildx-plugin
       - docker-compose-plugin
 
+  - name: Copy portainer docker-compose.yml
+    copy: 
+      src: portainer/{{ item }}
+      dest: /home/ansible-user/portainer/
+    loop:
+      - docker-compose.yml
+
   - name: Copy TLS Certs
     copy: 
       src: portainer/secrets/{{ item }}
@@ -95,5 +105,19 @@
       - tls.crt
       - tls.key
 
+  - name: Remove Portainer
+    shell: docker stop portainer && docker rm -f portainer
+    ignore_errors: yes
+
   - name: Setup portainer docker
-    shell: docker run -d -p 9443:9443 --name portainer --restart always  -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data -v /home/ansible-user/portainer/secrets/:/certs portainer/portainer-ce:2.21.1  --sslcert /certs/tls.crt --sslkey /certs/tls.key
+    shell: cd portainer && docker compose up -d
+
+  - name: Copy pihole docker-compose.yml
+    copy: 
+      src: pihole/{{ item }}
+      dest: /home/ansible-user/pihole/
+    loop:
+      - docker-compose.yml
+
+  - name: Setup pihole docker
+    shell: cd pihole && docker compose up -d
