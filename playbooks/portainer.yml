@@ -121,3 +121,20 @@
 
   - name: Setup pihole docker
     shell: cd pihole && docker compose up -d
+
+  - name: Change default DNS to point to pihole
+    ansible.builtin.lineinfile:
+      path: /etc/systemd/resolved.conf
+      regexp: '#DNS='
+      line: DNS=127.0.0.1:9995
+  
+  - name: Set DNSStubListener to no
+    ansible.builtin.lineinfile:
+      path: /etc/systemd/resolved.conf
+      regexp: '#DNSStubListener='
+      line: DNSStubListener=no
+
+  - name: Restart systemd-resolved
+    ansible.builtin.service:
+      name: systemd-resolved
+      state: restarted
