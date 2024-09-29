@@ -1,0 +1,107 @@
+- name: Allow everything and enable UFW
+  community.general.ufw:
+    state: enabled
+    policy: allow
+
+- name: Set logging
+  community.general.ufw:
+    logging: 'on'
+
+- name: Enable ports
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - 22
+    - 6443
+    - 32128
+
+- name: Enable Applications
+  community.general.ufw:
+    rule: allow
+    name: "{{ item }}"
+  loop:
+    - CUPS
+    - OpenSSH
+
+- name: Deny everything and enable UFW
+  community.general.ufw:
+    state: enabled
+    policy: deny
+
+- name: Install curl
+  apt:
+    name: curl
+    state: present
+
+- name: Install k3s
+  shell: curl -sfL https://get.k3s.io | sh -
+
+- name: Allow all access to tcp port 6443
+  community.general.ufw:
+    rule: allow
+    port: '6443'
+    proto: tcp
+
+- name: Install Helm
+  shell: curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && chmod 700 get_helm.sh && ./get_helm.sh
+
+- name: Add Kubernetes Dashboard repo
+  kubernetes.core.helm_repository:
+    name: kubernetes-dashboard
+    repo_url: "https://kubernetes.github.io/dashboard/"
+
+- name: Create kubernetes-dashboard namespace
+  shell: kubectl create namespace kubernetes-dashboard
+  ignore_errors: yes
+
+- name: Make directories
+  shell: mkdir kubernetes-dashboard && mkdir kubernetes-dashboard/secrets
+  ignore_errors: yes
+
+- name: Copy Kubernetes Dashboard TLS cert and key
+  copy: 
+    src: kubernetes-dashboard/secrets/{{ item }}
+    dest: kubernetes-dashboard/secrets/
+  loop:
+    - tls.crt
+    - tls.key
+
+- name: Create kubernetes secrets
+  shell: kubectl create secret generic kubernetes-dashboard-certs --from-file=kubernetes-dashboard/secrets/ -n kubernetes-dashboard
+  ignore_errors: yes
+
+- name: Delete ssl cert and key
+  shell: rm -rf kubernetes-dashboard/secrets/
+
+- name: Copy in values file
+  copy: 
+    src: kubernetes-dashboard/values.yml
+    dest: kubernetes-dashboard/values.yml
+
+- name: Deploy Kubernetes Dashboard
+  kubernetes.core.helm:
+    name: kubernetes-dashboard
+    chart_ref: kubernetes-dashboard/kubernetes-dashboard
+    release_namespace: kubernetes-dashboard
+    create_namespace: false
+    values_files:
+      - kubernetes-dashboard/values.yml
+
+- name: Copy in kubernetes templates for Kubernetes dashboard 
+  copy:
+    src: kubernetes-dashboard/{{ item }}
+    dest: kubernetes-dashboard/{{ item }}
+  loop:
+    - serviceaccount.yml
+    - clusterrolebinding.yml
+    - secret.yml
+
+- name: Setup Kubernetes dashboard
+  shell: kubectl apply -f kubernetes-dashboard/{{ item }}
+  loop:
+    - serviceaccount.yml
+    - clusterrolebinding.yml
+    - secret.yml
+

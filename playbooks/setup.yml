@@ -3,8 +3,6 @@
   hosts: controllers
   remote_user: ansible-user
   become: yes
-  environment:
-    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
   roles:
     - firewall
     - docker
