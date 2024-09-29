@@ -1,0 +1,21 @@
+- name: Copy portainer docker-compose.yml
+  copy: 
+    src: portainer/{{ item }}
+    dest: /home/ansible-user/portainer/
+  loop:
+    - docker-compose.yml
+
+- name: Copy TLS Certs
+  copy: 
+    src: portainer/secrets/{{ item }}
+    dest: /home/ansible-user/portainer/secrets/
+  loop:
+    - tls.crt
+    - tls.key
+
+- name: Remove Portainer
+  shell: docker stop portainer && docker rm -f portainer
+  ignore_errors: yes
+
+- name: Setup portainer docker
+  shell: cd portainer && docker compose up -d

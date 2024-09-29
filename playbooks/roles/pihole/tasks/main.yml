@@ -1,0 +1,27 @@
+- name: Copy pihole docker-compose.yml
+  copy: 
+    src: pihole/{{ item }}
+    dest: /home/ansible-user/pihole/
+  loop:
+    - docker-compose.yml
+    
+- name: Set DNSStubListener to no
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '#DNSStubListener='
+    line: DNSStubListener=no
+
+- name: Setup resolv.conf symlink
+  shell: rm /etc/resolv.conf && ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+
+- name: Restart systemd-resolved
+  ansible.builtin.service:
+    name: systemd-resolved
+    state: restarted
+
+- name: Remove pihole
+  shell: docker stop pihole && docker rm -f pihole
+  ignore_errors: yes
+
+- name: Setup pihole docker
+  shell: cd pihole && docker compose up -d

@@ -1,0 +1,48 @@
+- name: Delete all conflicting packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - docker.io
+    - docker-doc
+    - docker-compose
+    - docker-compose-v2
+    - podman-docker
+    - containerd
+
+- name: Apt update
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install ca-certificates and curl
+  ansible.builtin.apt: 
+    name: "{{ item }}"
+    state: present
+  loop:
+    - ca-certificates
+    - curl
+
+- name: Run install commands
+  shell: install -m 0755 -d /etc/apt/keyrings
+
+- name: Get docker gpg and change mod
+  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && chmod a+r /etc/apt/keyrings/docker.asc
+
+- name: Add repo to apt resources
+  shell: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+- name: Apt update
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install specific version of packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    allow_downgrade: yes
+  loop:
+    - docker-ce=5:27.2.0-1~ubuntu.24.04~noble
+    - docker-ce-cli=5:27.2.0-1~ubuntu.24.04~noble
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
