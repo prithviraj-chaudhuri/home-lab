@@ -1,0 +1,30 @@
+- name: Copy cron project folder
+  copy: 
+    src: cron/{{ item }}
+    dest: /home/ansible-user/cron/
+  loop:
+    - archive-notion
+  
+- name: Add cron to cron.d
+  shell: cp /home/ansible-user/cron/{{ item }}/crontab /etc/cron.d/{{ item }}
+  ignore_errors: yes
+  loop:
+    - archive-notion
+
+- name: make cron executable
+  shell: chmod 0644 /etc/cron.d/{{ item }}
+  ignore_errors: yes
+  loop:
+    - archive-notion
+
+- name: make run.sh executable
+  shell: chmod +x /home/ansible-user/cron/{{ item }}/run.sh
+  ignore_errors: yes
+  loop:
+    - archive-notion
+
+- name: Apply the cron job
+  shell: crontab /etc/cron.d/{{ item }}
+  ignore_errors: yes
+  loop:
+    - archive-notion

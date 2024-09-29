@@ -1,0 +1,7 @@
+services:
+  archive-notion:
+    container_name: archive-notion
+    build: .
+    volumes:
+      - './archive-tasks:/tmp/archive-tasks'
+    restart: no
