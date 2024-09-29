@@ -24,7 +24,7 @@
     loop:
       - 22
       - 9443
-      - 9995
+      - 53
       - 9967
       - 9999
 
@@ -118,23 +118,23 @@
       dest: /home/ansible-user/pihole/
     loop:
       - docker-compose.yml
-
-  - name: Setup pihole docker
-    shell: cd pihole && docker compose up -d
-
-  - name: Change default DNS to point to pihole
-    ansible.builtin.lineinfile:
-      path: /etc/systemd/resolved.conf
-      regexp: '#DNS='
-      line: DNS=127.0.0.1:9995
-  
+      
   - name: Set DNSStubListener to no
     ansible.builtin.lineinfile:
       path: /etc/systemd/resolved.conf
       regexp: '#DNSStubListener='
       line: DNSStubListener=no
 
+  - name: Setup resolv.conf symlink
+    shell: rm /etc/resolv.conf && ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+
   - name: Restart systemd-resolved
     ansible.builtin.service:
       name: systemd-resolved
       state: restarted
+
+  - name: Setup pihole docker
+    shell: cd pihole && docker compose up -d
+  
+ 
+
