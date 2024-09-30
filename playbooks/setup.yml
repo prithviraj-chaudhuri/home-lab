@@ -7,5 +7,6 @@
     - firewall
     - docker
     - portainer
+    - grafana
     - pihole
     - cron

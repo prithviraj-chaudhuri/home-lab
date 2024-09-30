@@ -1,0 +1,13 @@
+- name: Copy grafana docker-compose.yml
+  copy: 
+    src: grafana/{{ item }}
+    dest: /home/ansible-user/grafana/
+  loop:
+    - docker-compose.yml
+
+- name: Remove grafana
+  shell: docker stop grafana && docker rm -f grafana
+  ignore_errors: yes
+
+- name: Setup grafana docker
+  shell: cd grafana && docker compose up -d
