@@ -4,8 +4,8 @@
   remote_user: ansible-user
   become: yes
   roles:
-    # - firewall
-    # - docker
-    # - portainer
-    # - pihole
+    - firewall
+    - docker
+    - portainer
+    - pihole
     - cron
