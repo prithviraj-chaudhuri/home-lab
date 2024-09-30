@@ -1,1 +1,1 @@
-*/15 * * * * /home/ansible-user/cron/archive-notion/run.sh
+0 0 * * * /home/ansible-user/cron/archive-notion/run.sh
