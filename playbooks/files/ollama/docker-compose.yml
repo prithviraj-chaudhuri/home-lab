@@ -1,0 +1,18 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "9556:8080"
+    environment:
+      OLLAMA_BASE_URL: http://10.0.0.163:9555
+    volumes:
+      - /home/ansible-user/ollama/open-webui:/app/backend/data
+    restart: unless-stopped
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "9555:11434"
+    volumes:
+      - /home/ansible-user/ollama/ollama_volume:/root/.ollama
