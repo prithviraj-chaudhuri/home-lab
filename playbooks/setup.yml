@@ -5,8 +5,8 @@
   become: yes
   roles:
     - firewall
-    - docker
-    - portainer
-    - grafana
-    - pihole
-    - cron
+    # - docker
+    - lnm
+    # - portainer
+    # - pihole
+    # - cron

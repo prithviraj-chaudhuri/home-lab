@@ -1,0 +1,44 @@
+- name: Copy grafana docker-compose.yml
+  copy: 
+    src: lnm/{{ item }}
+    dest: /home/ansible-user/lnm/
+  loop:
+    - docker-compose.yml
+
+- name: Create {{ item }} dir
+  file: 
+    path:  "/home/ansible-user/lnm/{{ item }}"
+    state: directory
+  loop:
+    - loki
+    - promtail
+    - grafana
+
+- name: Copy {{ item }} configs
+  copy: 
+    src: lnm/{{ item }}/{{ item }}-config.yml
+    dest: /home/ansible-user/lnm/{{ item }}/{{ item }}-config.yml
+  loop:
+    - loki
+    - promtail
+
+- name: Install docker loki plugin
+  shell: docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+  ignore_errors: yes
+
+- name: Copy in the docker daemon
+  copy: 
+    src: lnm/daemon.json
+    dest: /etc/docker/daemon.json
+
+- name: Restart docker
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+
+- name: Remove lnm containers
+  shell: cd lnm && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup lnm docker
+  shell: cd lnm && docker compose up -d
