@@ -3,5 +3,5 @@ services:
     container_name: archive-notion
     build: .
     volumes:
-      - './archive-tasks:/tmp/archive-tasks'
+      - '/home/ansible-user/cron/archive-notion/archive-tasks:/tmp/archive-tasks'
     restart: no

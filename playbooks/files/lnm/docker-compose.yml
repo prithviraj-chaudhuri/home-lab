@@ -1,11 +1,10 @@
 services:
   grafana:
     image: grafana/grafana-oss
+    user: "0"
     container_name: grafana
     restart: unless-stopped
     ports:
      - '3000:3000'
     volumes:
-      - ./grafana-storage:/var/lib/grafana
-volumes:
-  grafana-storage: {}
+      - /home/ansible-user/lnm/grafana:/var/lib/grafana
