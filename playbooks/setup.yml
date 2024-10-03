@@ -8,5 +8,6 @@
     - docker
     - portainer
     - lnm
+    - filebrowser
     - pihole
     - cron

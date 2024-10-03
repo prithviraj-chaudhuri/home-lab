@@ -1,0 +1,14 @@
+- name: Copy filebrowser files in
+  copy: 
+    src: filebrowser/{{ item }}
+    dest: /home/ansible-user/filebrowser/
+  loop:
+    - docker-compose.yml
+    - filebrowser.json
+
+- name: Remove filebrowser
+  shell: cd filebrowser && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup filebrowser
+  shell: cd filebrowser && docker compose up -d

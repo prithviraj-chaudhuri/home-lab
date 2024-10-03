@@ -14,7 +14,7 @@
     - tls.key
 
 - name: Remove Portainer
-  shell: docker stop portainer && docker rm -f portainer
+  shell: cd portainer && docker compose down && docker compose rm
   ignore_errors: yes
 
 - name: Setup portainer docker

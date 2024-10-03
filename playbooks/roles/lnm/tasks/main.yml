@@ -6,7 +6,7 @@
     - docker-compose.yml
 
 - name: Remove lnm
-  shell: cd lnm && docker stop lnm && docker compose rm lnm
+  shell: cd lnm && docker compose down && docker compose rm
   ignore_errors: yes
 
 - name: Setup lnm

@@ -1,0 +1,12 @@
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:v2.31.1
+    container_name: filebrowser
+    user: "0"
+    restart: unless-stopped
+    ports:
+     - '9090:80'
+    volumes:
+      - /home/ansible-user:/srv
+      - //home/ansible-user/filebrowser/filebrowser.db:/database.db
+      - /home/ansible-user/filebrowser/filebrowser.json:/.filebrowser.json 

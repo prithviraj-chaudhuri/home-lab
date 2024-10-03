@@ -20,7 +20,7 @@
     state: restarted
 
 - name: Remove pihole
-  shell: docker stop pihole && docker rm -f pihole
+  shell: cd pihole && docker compose down && docker compose rm
   ignore_errors: yes
 
 - name: Setup pihole docker
