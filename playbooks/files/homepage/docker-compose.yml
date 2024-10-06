@@ -1,0 +1,13 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    ports:
+      - 9455:3000
+    env_file: .env # use .env
+    volumes:
+      - /home/ansible-user/homepage/config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      PUID: $PUID
+      PGID: $PGID

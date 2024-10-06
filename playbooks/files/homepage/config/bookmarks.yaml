@@ -1,0 +1,16 @@
+---
+- Developer:
+    - Github:
+        - abbr: GH
+          href: https://github.com/prithviraj-chaudhuri
+    - Google Console:
+        - abbr: GC
+          href: https://console.cloud.google.com/
+
+- Projects:
+    - Scripts:
+        - abbr: AS
+          href: https://github.com/prithviraj-chaudhuri/shortcut-scripts
+    - Home Lab:
+        - abbr: HL
+          href: https://github.com/prithviraj-chaudhuri/home-lab

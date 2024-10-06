@@ -1,0 +1,34 @@
+- name: Create directories
+  ansible.builtin.file:
+    path: /home/ansible-user/homepage/config
+    state: directory
+
+- name: Copy config files in
+  copy: 
+    src: homepage/config/{{ item }}
+    dest: /home/ansible-user/homepage/config
+  loop:
+    - services.yaml
+    - settings.yaml
+    - bookmarks.yaml
+
+- name: Copy .env files in
+  copy: 
+    src: homepage/secrets/{{ item }}
+    dest: /home/ansible-user/homepage/
+  loop:
+    - .env
+  
+- name: Copy docker compose file
+  copy: 
+    src: homepage/{{ item }}
+    dest: /home/ansible-user/homepage/
+  loop:
+    - docker-compose.yml
+
+- name: Remove homepage
+  shell: cd homepage && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup homepage
+  shell: cd homepage && docker compose up -d

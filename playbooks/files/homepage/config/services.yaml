@@ -1,0 +1,35 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/services
+
+- Admin:
+    - Portainer:
+        icon: portainer.png
+        href: https://eq-01.pi.hole:9443/
+        description: Docker container administration
+    - Pihole:
+        icon: pi-hole.png
+        href: http://eq-01.pi.hole:9999/admin/login.php
+        description: DNS Service
+    - Filesbrowser:
+        icon: filebrowser.png
+        href: http://eq-01.pi.hole:9090/
+        description: Files
+    - Grafana:
+        icon: grafana.png
+        href: http://eq-01.pi.hole:3000/
+        description: Grafana
+
+- Services:
+    - Ollama:
+        icon: ollama.png
+        href: http://eq-01.pi.hole:9555/
+        description: Homepage is the best
+    - Ollama UI:
+        icon: open-webui-light.png
+        href: http://eq-01.pi.hole:9556/
+        description: Homepage is the best
+
+# - Projects:
+#     - My Third Service:
+#         href: http://localhost/
