@@ -1,0 +1,14 @@
+- name: Copy traefik files in
+  copy: 
+    src: traefik/{{ item }}
+    dest: /home/ansible-user/traefik/
+  loop:
+    - docker-compose.yml
+    - secrets/.env
+  
+- name: Remove traefik
+  shell: cd traefik && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup traefik
+  shell: cd traefik && docker compose up -d

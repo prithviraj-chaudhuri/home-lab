@@ -1,0 +1,14 @@
+- name: Copy n8n files in
+  copy: 
+    src: n8n/{{ item }}
+    dest: /home/ansible-user/n8n/
+  loop:
+    - docker-compose.yml
+    - secrets/.env
+  
+- name: Remove n8n
+  shell: cd n8n && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup n8n
+  shell: cd n8n && docker compose up -d
