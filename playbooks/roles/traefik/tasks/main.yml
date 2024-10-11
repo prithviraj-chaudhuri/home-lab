@@ -6,6 +6,10 @@
     - docker-compose.yml
     - secrets/.env
   
+- name: Create external traefik network
+  shell: docker network create traefik
+  ignore_errors: yes
+
 - name: Remove traefik
   shell: cd traefik && docker compose down && docker compose rm
   ignore_errors: yes

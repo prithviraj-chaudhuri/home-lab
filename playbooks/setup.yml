@@ -5,14 +5,13 @@
   become: yes
   roles:
     - firewall
-    - docker
+    # - docker
     - traefik
-    - n8n
-    # - nginx-proxy
-    - portainer
-    - lnm
-    - filebrowser
-    - pihole
-    - cron
-    - ollama
+    # - n8n
+    # - portainer
+    # - lnm
+    # - filebrowser
+    # - pihole
+    # - cron
+    # - ollama
     - homepage

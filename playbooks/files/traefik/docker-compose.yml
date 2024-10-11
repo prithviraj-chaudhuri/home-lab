@@ -1,23 +1,32 @@
 services:
   traefik:
-    image: "traefik"
+    image: "traefik:v3.1"
     container_name: "traefik"
     restart: always
     command:
-      - "--api=true"
+      - "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker=true"
+      - "--providers.docker.watch=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
-      - "--certificatesresolvers.mytlschallenge.acme.email=${SSL_EMAIL}"
-      - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
+      - "--entryPoints.web.address=:80"
+      - "--accesslog=true"
+      # - "--providers.docker.useBindPortIP=true"
+      # - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      # - "--entrypoints.websecure.address=:443"
+      # - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
+      # - "--certificatesresolvers.mytlschallenge.acme.email=${SSL_EMAIL}"
+      # - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
       - "443:443"
+      - "3005:8080"
+    networks:
+      - traefik
     volumes:
       - /home/ansible-user/traefik/traefik_data:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
+
+networks:
+  traefik:
+    external: true
