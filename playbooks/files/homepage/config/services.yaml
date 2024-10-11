@@ -9,15 +9,19 @@
         description: Docker container administration
     - Pihole:
         icon: pi-hole.png
-        href: http://eq-01.pi.hole:9999/admin/login.php
+        href: http://pihole.eq-01.pi.hole/admin/login.php
         description: DNS Service
+    - Traefik:
+        icon: traefik.png
+        href: http://traefik.eq-01.pi.hole/
+        description: Traefik
     - Filesbrowser:
         icon: filebrowser.png
-        href: http://eq-01.pi.hole:9090/
+        href: http://filebrowser.eq-01.pi.hole/
         description: Files
     - Grafana:
         icon: grafana.png
-        href: http://eq-01.pi.hole:3000/
+        href: http://grafana.eq-01.pi.hole/
         description: Grafana
 
 - Services:

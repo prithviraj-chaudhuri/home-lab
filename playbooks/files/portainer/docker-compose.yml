@@ -13,5 +13,18 @@ services:
     command:
       --sslcert /certs/tls.crt
       --sslkey /certs/tls.key
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.eq-01.pi.hole`)"
+      - "traefik.http.routers.portainer.entrypoints=web"
+      - "traefik.http.routers.portainer.service=portainer"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9443"
+
+networks:
+  traefik:
+    external: true
+
 volumes:
   portainer_data:

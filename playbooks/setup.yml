@@ -4,14 +4,14 @@
   remote_user: ansible-user
   become: yes
   roles:
-    - firewall
+    # - firewall
     # - docker
     - traefik
+    - portainer
+    - pihole
+    - filebrowser
+    - lnm
     # - n8n
-    # - portainer
-    # - lnm
-    # - filebrowser
-    # - pihole
     # - cron
     # - ollama
     - homepage
