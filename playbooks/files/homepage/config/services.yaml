@@ -27,12 +27,16 @@
 - Services:
     - Ollama:
         icon: ollama.png
-        href: http://eq-01.pi.hole:9555/
-        description: Homepage is the best
+        href: http://ollama.eq-01.pi.hole/
+        description: Ollama service
     - Ollama UI:
         icon: open-webui-light.png
-        href: http://eq-01.pi.hole:9556/
-        description: Homepage is the best
+        href: http://chat.eq-01.pi.hole/
+        description: AI Chat
+    - N8N:
+        icon: n8n.png
+        href: http://eq-01.pi.hole:5678
+        description: N8N
 
 # - Projects:
 #     - My Third Service:

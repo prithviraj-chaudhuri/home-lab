@@ -9,6 +9,15 @@ services:
     volumes:
       - /home/ansible-user/ollama/open-webui:/app/backend/data
     restart: unless-stopped
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chat.rule=Host(`chat.eq-01.pi.hole`)"
+      - "traefik.http.routers.chat.entrypoints=web"
+      - "traefik.http.routers.chat.service=chat"
+      - "traefik.http.services.chat.loadbalancer.server.port=8080"
+
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
@@ -16,3 +25,15 @@ services:
       - "9555:11434"
     volumes:
       - /home/ansible-user/ollama/ollama_volume:/root/.ollama
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ollama.rule=Host(`ollama.eq-01.pi.hole`)"
+      - "traefik.http.routers.ollama.entrypoints=web"
+      - "traefik.http.routers.ollama.service=ollama"
+      - "traefik.http.services.ollama.loadbalancer.server.port=11434"
+
+networks:
+  traefik:
+    external: true
