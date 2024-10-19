@@ -5,37 +5,37 @@
 - Admin:
     - Portainer:
         icon: portainer.png
-        href: https://eq-01.pi.hole:9443/
+        href: https://portainer.eq-01.pi.hole
         description: Docker container administration
     - Pihole:
         icon: pi-hole.png
-        href: http://pihole.eq-01.pi.hole/admin/login.php
+        href: https://pihole.eq-01.pi.hole/admin/login.php
         description: DNS Service
     - Traefik:
         icon: traefik.png
-        href: http://traefik.eq-01.pi.hole/
+        href: https://traefik.eq-01.pi.hole/
         description: Traefik
     - Filesbrowser:
         icon: filebrowser.png
-        href: http://filebrowser.eq-01.pi.hole/
+        href: https://filebrowser.eq-01.pi.hole/
         description: Files
     - Grafana:
         icon: grafana.png
-        href: http://grafana.eq-01.pi.hole/
+        href: https://grafana.eq-01.pi.hole/
         description: Grafana
 
 - Services:
     - Ollama:
         icon: ollama.png
-        href: http://ollama.eq-01.pi.hole/
+        href: https://ollama.eq-01.pi.hole/
         description: Ollama service
     - Ollama UI:
         icon: open-webui-light.png
-        href: http://chat.eq-01.pi.hole/
+        href: https://chat.eq-01.pi.hole/
         description: AI Chat
     - N8N:
         icon: n8n.png
-        href: http://eq-01.pi.hole:5678
+        href: https://n8n.eq-01.pi.hole
         description: N8N
 
 # - Projects:

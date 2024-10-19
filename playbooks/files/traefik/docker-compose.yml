@@ -11,12 +11,13 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
       - "--accesslog=true"
-      # - "--providers.docker.useBindPortIP=true"
-      # - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-      # - "--entrypoints.websecure.address=:443"
-      # - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
-      # - "--certificatesresolvers.mytlschallenge.acme.email=${SSL_EMAIL}"
-      # - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
+      - "--providers.docker.useBindPortIP=true"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.localtlschallenge.acme.tlschallenge=true"
+      - "--certificatesresolvers.localtlschallenge.acme.email=${SSL_EMAIL}"
+      - "--certificatesresolvers.localtlschallenge.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
       - "443:443"
@@ -29,8 +30,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.rule=Host(`traefik.eq-01.pi.hole`)"
-      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.service=traefik"
+      - "traefik.http.routers.traefik.tls.certresolver=localtlschallenge"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 
 networks:

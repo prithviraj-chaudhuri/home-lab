@@ -18,8 +18,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.rule=Host(`portainer.eq-01.pi.hole`)"
-      - "traefik.http.routers.portainer.entrypoints=web"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.service=portainer"
+      - "traefik.http.routers.portainer.tls.certresolver=localtlschallenge"
       - "traefik.http.services.portainer.loadbalancer.server.port=9443"
 
 networks:

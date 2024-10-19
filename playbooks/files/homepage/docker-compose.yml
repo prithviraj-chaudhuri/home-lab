@@ -16,8 +16,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homepage.rule=Host(`homepage.eq-01.pi.hole`)"
-      - "traefik.http.routers.homepage.entrypoints=web"
+      - "traefik.http.routers.homepage.entrypoints=websecure"
       - "traefik.http.routers.homepage.service=homepage"
+      - "traefik.http.routers.homepage.tls.certresolver=localtlschallenge"
       - "traefik.http.services.homepage.loadbalancer.server.port=3000"
 
 networks:
