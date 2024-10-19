@@ -6,6 +6,34 @@
     - docker-compose.yml
     - secrets/.env
   
+- name: Create directories
+  ansible.builtin.file:
+    path: /home/ansible-user/traefik/traefik_data
+    state: directory
+
+- name: Create directories {{ item }}
+  ansible.builtin.file:
+    path: /home/ansible-user/traefik/traefik_data/{{ item }}
+    state: directory
+  loop:
+    - certs
+    - dynamic
+
+- name: Copy certs
+  copy: 
+    src: traefik/secrets/certs/{{ item }}
+    dest: /home/ansible-user/traefik/traefik_data/certs
+  loop:
+    - tls.crt
+    - tls.key
+
+- name: Copy traefik_dynamic.yml
+  copy: 
+    src: traefik/{{ item }}
+    dest: /home/ansible-user/traefik/traefik_data/dynamic
+  loop:
+    - traefik_dynamic.yml
+
 - name: Create external traefik network
   shell: docker network create traefik
   ignore_errors: yes

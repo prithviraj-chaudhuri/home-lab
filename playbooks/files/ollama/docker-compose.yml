@@ -14,7 +14,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.chat.rule=Host(`chat.eq-01.pi.hole`)"
-      - "traefik.http.routers.chat.entrypoints=web"
+      - "traefik.http.routers.chat.entrypoints=websecure"
       - "traefik.http.routers.chat.service=chat"
       - "traefik.http.services.chat.loadbalancer.server.port=8080"
 
@@ -32,7 +32,6 @@ services:
       - "traefik.http.routers.ollama.rule=Host(`ollama.eq-01.pi.hole`)"
       - "traefik.http.routers.ollama.entrypoints=websecure"
       - "traefik.http.routers.ollama.service=ollama"
-      - "traefik.http.routers.ollama.tls.certresolver=localtlschallenge"
       - "traefik.http.services.ollama.loadbalancer.server.port=11434"
 
 networks:

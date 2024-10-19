@@ -4,20 +4,19 @@ services:
     container_name: "traefik"
     restart: always
     command:
+      - "--global.checknewversion=false"
       - "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.watch=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entryPoints.web.address=:80"
-      - "--accesslog=true"
+      - "--providers.file.directory=/dynamic/"
       - "--providers.docker.useBindPortIP=true"
+      - "--entryPoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.localtlschallenge.acme.tlschallenge=true"
-      - "--certificatesresolvers.localtlschallenge.acme.email=${SSL_EMAIL}"
-      - "--certificatesresolvers.localtlschallenge.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.websecure.http.tls=true"
     ports:
       - "80:80"
       - "443:443"
@@ -25,14 +24,14 @@ services:
     networks:
       - traefik
     volumes:
-      - /home/ansible-user/traefik/traefik_data:/letsencrypt
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - '/home/ansible-user/traefik/traefik_data/certs:/conf/certs'
+      - '/home/ansible-user/traefik/traefik_data/dynamic:/dynamic'
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.rule=Host(`traefik.eq-01.pi.hole`)"
       - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.service=traefik"
-      - "traefik.http.routers.traefik.tls.certresolver=localtlschallenge"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 
 networks:

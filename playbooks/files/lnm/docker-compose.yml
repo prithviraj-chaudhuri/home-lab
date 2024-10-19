@@ -15,7 +15,6 @@ services:
       - "traefik.http.routers.grafana.rule=Host(`grafana.eq-01.pi.hole`)"
       - "traefik.http.routers.grafana.entrypoints=websecure"
       - "traefik.http.routers.grafana.service=grafana"
-      - "traefik.http.routers.grafana.tls.certresolver=localtlschallenge"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
 
 networks:
