@@ -2,29 +2,26 @@ services:
   n8n:
     image: docker.n8n.io/n8nio/n8n
     container_name: n8n
-    restart: always
+    restart: unless-stopped
     ports:
       - "5678:5678"
+    networks:
+      - traefik
+    volumes:
+      - "/home/ansible-user/n8n/n8n_data:/home/node/.n8n"
+      - "/home/ansible-user/n8n/certs:/certs"
     labels:
-      - traefik.enable=false
-      - traefik.http.routers.n8n.rule=Host(`${SUBDOMAIN}.${DOMAIN_NAME}`)
-      - traefik.http.routers.n8n.tls=true
-      - traefik.http.routers.n8n.entrypoints=web,websecure
-      - traefik.http.routers.n8n.tls.certresolver=mytlschallenge
-      - traefik.http.middlewares.n8n.headers.SSLRedirect=true
-      - traefik.http.middlewares.n8n.headers.STSSeconds=315360000
-      - traefik.http.middlewares.n8n.headers.browserXSSFilter=true
-      - traefik.http.middlewares.n8n.headers.contentTypeNosniff=true
-      - traefik.http.middlewares.n8n.headers.forceSTSHeader=true
-      - traefik.http.middlewares.n8n.headers.SSLHost=${DOMAIN_NAME}
-      - traefik.http.middlewares.n8n.headers.STSIncludeSubdomains=true
-      - traefik.http.middlewares.n8n.headers.STSPreload=true
-      - traefik.http.routers.n8n.middlewares=n8n@docker
+      - "traefik.enable=true"
+      - "traefik.http.routers.n8n.rule=Host(`n8n.eq-01.pi.hole`)"
+      - "traefik.http.routers.n8n.entrypoints=websecure"
+      - "traefik.http.routers.n8n.service=n8n"
+      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
     environment:
-      - N8N_SECURE_COOKIE=false
-      - N8N_HOST=${SUBDOMAIN}.${DOMAIN_NAME}
-      - N8N_PORT=5678
-      - N8N_PROTOCOL=https
-      - NODE_ENV=production
-      - WEBHOOK_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
-      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_HOST=0.0.0.0
+      - WEBHOOK_URL=https://n8n.eq-01.pi.hole/
+      - GENERIC_TIMEZONE=EST
+
+networks:
+  traefik:
+    external: true

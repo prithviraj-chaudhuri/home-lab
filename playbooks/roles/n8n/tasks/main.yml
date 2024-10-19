@@ -4,8 +4,17 @@
     dest: /home/ansible-user/n8n/
   loop:
     - docker-compose.yml
-    - secrets/.env
   
+- name: Create directories {{ item }}
+  ansible.builtin.file:
+    path: /home/ansible-user/n8n/{{ item }}
+    state: directory
+  loop:
+    - n8n_data
+
+- name: Change mounted volume permissions
+  shell: chown -R 1000:1000 /home/ansible-user/n8n/n8n_data && chmod -R 755 /home/ansible-user/n8n/n8n_data
+
 - name: Remove n8n
   shell: cd n8n && docker compose down && docker compose rm
   ignore_errors: yes

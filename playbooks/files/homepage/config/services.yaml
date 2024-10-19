@@ -35,7 +35,7 @@
         description: AI Chat
     - N8N:
         icon: n8n.png
-        href: https://n8n.eq-01.pi.hole
+        href: https://n8n.eq-01.pi.hole/
         description: N8N
 
 # - Projects:
