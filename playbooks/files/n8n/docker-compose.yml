@@ -8,6 +8,7 @@ services:
     networks:
       - traefik
     volumes:
+      - "/home/ansible-user/n8n/saved_data:/saved_data"
       - "/home/ansible-user/n8n/n8n_data:/home/node/.n8n"
       - "/home/ansible-user/n8n/certs:/certs"
     labels:

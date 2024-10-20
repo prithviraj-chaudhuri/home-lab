@@ -11,9 +11,13 @@
     state: directory
   loop:
     - n8n_data
+    - saved_data
 
 - name: Change mounted volume permissions
-  shell: chown -R 1000:1000 /home/ansible-user/n8n/n8n_data && chmod -R 755 /home/ansible-user/n8n/n8n_data
+  shell: chown -R 1000:1000 /home/ansible-user/n8n/{{ item }} && chmod -R 755 /home/ansible-user/n8n/{{ item }}
+  loop:
+    - n8n_data
+    - saved_data
 
 - name: Remove n8n
   shell: cd n8n && docker compose down && docker compose rm
