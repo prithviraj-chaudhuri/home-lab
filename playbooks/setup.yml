@@ -10,6 +10,7 @@
     - portainer
     - pihole
     - filebrowser
+    - database
     - lnm
     - n8n
     - cron
