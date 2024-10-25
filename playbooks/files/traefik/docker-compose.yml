@@ -4,6 +4,7 @@ services:
     container_name: "traefik"
     restart: always
     command:
+      - --global.sendAnonymousUsage=false
       - "--global.checknewversion=false"
       - "--log.level=DEBUG"
       - "--api.insecure=true"
@@ -17,6 +18,7 @@ services:
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
+      - "--entryPoints.tcp.address=:5432"
     ports:
       - "80:80"
       - "443:443"

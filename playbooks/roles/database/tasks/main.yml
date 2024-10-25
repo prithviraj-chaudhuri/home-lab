@@ -1,0 +1,25 @@
+- name: Create directories
+  ansible.builtin.file:
+    path: /home/ansible-user/database
+    state: directory
+
+- name: Copy .env files in
+  copy: 
+    src: database/secrets/{{ item }}
+    dest: /home/ansible-user/database/
+  loop:
+    - .env
+  
+- name: Copy docker compose file
+  copy: 
+    src: database/{{ item }}
+    dest: /home/ansible-user/database/
+  loop:
+    - docker-compose.yml
+
+- name: Remove database
+  shell: cd database && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup database
+  shell: cd database && docker compose up -d
