@@ -14,19 +14,8 @@
     proto: tcp
   loop:
     - 22
-    - 53
     - 80
     - 443
-    - 3000
-    - 3005
-    - 5678
-    - 9090
-    - 9443
-    - 9455
-    - 9555
-    - 9556
-    - 9967
-    - 9999
 
 - name: Enable Applications
   community.general.ufw:
