@@ -22,7 +22,6 @@
     rule: allow
     name: "{{ item }}"
   loop:
-    - CUPS
     - OpenSSH
 
 - name: Deny everything and enable UFW
