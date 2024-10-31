@@ -1,8 +1,10 @@
 services:
   n8n:
-    image: docker.n8n.io/n8nio/n8n
+    build:
+      context: .
     container_name: n8n
     restart: unless-stopped
+    user: "node"
     ports:
       - "5678:5678"
     networks:
@@ -11,6 +13,7 @@ services:
       - "/home/ansible-user/n8n/saved_data:/saved_data"
       - "/home/ansible-user/n8n/n8n_data:/home/node/.n8n"
       - "/home/ansible-user/n8n/certs:/certs"
+      - "/home/ansible-user/n8n/secrets:/secrets"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.n8n.rule=Host(`n8n.eq-01.pi.hole`)"
@@ -22,6 +25,8 @@ services:
       - N8N_HOST=0.0.0.0
       - WEBHOOK_URL=https://n8n.eq-01.pi.hole/
       - GENERIC_TIMEZONE=EST
+      - CONFIG=/secrets
+      - DATA=/saved_data
 
 networks:
   traefik:

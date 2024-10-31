@@ -4,6 +4,7 @@
     dest: /home/ansible-user/n8n/
   loop:
     - docker-compose.yml
+    - Dockerfile
   
 - name: Create directories {{ item }}
   ansible.builtin.file:
@@ -12,6 +13,12 @@
   loop:
     - n8n_data
     - saved_data
+    - secrets
+
+- name: Copy secret files in
+  copy: 
+    src: n8n/secrets
+    dest: /home/ansible-user/n8n/
 
 - name: Change mounted volume permissions
   shell: chown -R 1000:1000 /home/ansible-user/n8n/{{ item }} && chmod -R 755 /home/ansible-user/n8n/{{ item }}
