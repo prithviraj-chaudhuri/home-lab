@@ -1,0 +1,31 @@
+- name: Create directories
+  ansible.builtin.file:
+    path: /home/ansible-user/{{ item }}
+    state: directory
+  loop:
+    - scripts
+    - scripts/categorize-gmail
+    - scripts/categorize-gmail/secrets
+
+- name: Download categorize-gmail scripts
+  shell: wget https://raw.githubusercontent.com/prithviraj-chaudhuri/automation-and-scripts/refs/heads/main/categorize-gmail/scripts/{{ item }} -O /home/ansible-user/scripts/categorize-gmail/{{ item }}
+  loop:
+    - Dockerfile
+    - download-batch-emails.py
+    - requirements.txt
+
+- name: Copy docker compose files in
+  copy: 
+    src: scripts/{{ item }}
+    dest: /home/ansible-user/scripts/{{ item }}
+  loop:
+    - categorize-gmail/docker-compose.yml
+
+- name: Copy categorize-gmail files in
+  copy: 
+    src: scripts/secrets/categorize-gmail/{{ item }}
+    dest: /home/ansible-user/scripts/categorize-gmail/secrets
+  loop:
+    - credentials.json
+    - token-gmail.json
+

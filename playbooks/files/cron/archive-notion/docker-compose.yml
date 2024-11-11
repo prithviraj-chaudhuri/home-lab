@@ -1,9 +1,0 @@
-services:
-  archive-notion:
-    container_name: archive-notion
-    build:
-      context: .
-      no_cache: yes
-    volumes:
-      - '/home/ansible-user/cron/archive-notion/archive-tasks:/tmp/archive-tasks'
-    restart: no
