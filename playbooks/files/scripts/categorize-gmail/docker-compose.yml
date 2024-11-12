@@ -4,6 +4,9 @@ services:
     build:
       context: .
       no_cache: yes
+    environment:
+      - START_DATE=${START_DATE}
+      - END_DATE=${END_DATE}
     volumes:
       - '/home/ansible-user/scripts/categorize-gmail/secrets:/config'
       - '/home/ansible-user/scripts/categorize-gmail/data:/data'
