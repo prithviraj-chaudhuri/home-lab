@@ -1,0 +1,9 @@
+services:
+  download-emails:
+    container_name: download-emails
+    build:
+      context: .
+      no_cache: yes
+    volumes:
+      - '/home/ansible-user/scripts/categorize-gmail/secrets:/config'
+      - '/home/ansible-user/scripts/categorize-gmail/data:/data'

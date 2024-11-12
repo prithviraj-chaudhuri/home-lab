@@ -8,7 +8,7 @@
     - scripts/categorize-gmail/secrets
 
 - name: Download categorize-gmail scripts
-  shell: wget https://raw.githubusercontent.com/prithviraj-chaudhuri/automation-and-scripts/refs/heads/main/categorize-gmail/scripts/{{ item }} -O /home/ansible-user/scripts/categorize-gmail/{{ item }}
+  shell: wget --no-cache https://raw.githubusercontent.com/prithviraj-chaudhuri/automation-and-scripts/refs/heads/main/categorize-gmail/scripts/{{ item }} -O /home/ansible-user/scripts/categorize-gmail/{{ item }}
   loop:
     - Dockerfile
     - download-batch-emails.py
