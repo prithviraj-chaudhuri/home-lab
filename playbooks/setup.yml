@@ -13,6 +13,6 @@
     - database
     - lnm
     - n8n
-    - cron
+    - scripts
     - ollama
     - homepage
