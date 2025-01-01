@@ -4,6 +4,7 @@
     dest: /home/ansible-user/ollama/
   loop:
     - docker-compose.yml
+    - entrypoint.sh
 
 - name: Remove ollama
   shell: cd ollama && docker compose down && docker compose rm

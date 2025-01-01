@@ -5,7 +5,7 @@ services:
     ports:
       - "9556:8080"
     environment:
-      OLLAMA_BASE_URL: http://10.0.0.163:9555
+      OLLAMA_BASE_URL: "http://ollama:11434"
     volumes:
       - /home/ansible-user/ollama/open-webui:/app/backend/data
     restart: unless-stopped
@@ -25,6 +25,7 @@ services:
       - "9555:11434"
     volumes:
       - /home/ansible-user/ollama/ollama_volume:/root/.ollama
+      - /home/ansible-user/ollama/entrypoint.sh:/entrypoint.sh
     networks:
       - traefik
     labels:
@@ -33,6 +34,7 @@ services:
       - "traefik.http.routers.ollama.entrypoints=websecure"
       - "traefik.http.routers.ollama.service=ollama"
       - "traefik.http.services.ollama.loadbalancer.server.port=11434"
+    entrypoint: ["/usr/bin/bash", "/entrypoint.sh"]
 
 networks:
   traefik:
