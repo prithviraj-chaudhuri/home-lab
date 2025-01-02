@@ -7,6 +7,7 @@ services:
     environment:
       - START_DATE=${START_DATE}
       - END_DATE=${END_DATE}
+      - PAGES_TO_PROCESS=${PAGES_TO_PROCESS}
     volumes:
       - '/home/ansible-user/scripts/categorize-gmail/secrets:/config'
       - '/home/ansible-user/scripts/categorize-gmail/data:/data'
