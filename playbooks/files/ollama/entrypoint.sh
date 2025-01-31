@@ -5,8 +5,8 @@ pid=$!
 
 sleep 5
 
-echo "Retrieve Phi3 model..."
-ollama pull phi3:medium
-echo "Done!"
+# echo "Retrieve Deepseek R1:8b model..."
+# ollama pull deepseek-r1:8b
+# echo "Done!"
 
 wait $pid
