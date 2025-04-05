@@ -3,7 +3,7 @@ description: Deploy Services to Homelab
 run-name: ${{ github.actor }} is running the workflow
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  run-playbook:
     runs-on: self-hosted
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
