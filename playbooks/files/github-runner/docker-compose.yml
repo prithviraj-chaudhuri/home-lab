@@ -1,0 +1,17 @@
+services:
+  github-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: github-runner
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - /home/ansible-user/github-runner/tmp:/tmp/github-runner
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true

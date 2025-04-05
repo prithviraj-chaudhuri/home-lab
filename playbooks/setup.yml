@@ -16,3 +16,6 @@
     - scripts
     - ollama
     - homepage
+    - role: github-runner
+      tags:
+        - github-runner
