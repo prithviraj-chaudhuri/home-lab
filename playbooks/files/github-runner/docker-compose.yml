@@ -6,9 +6,9 @@ services:
     container_name: github-runner
     restart: unless-stopped
     env_file:
-      - .env
+      - /home/ansible-user/github-runner/home/secrets/.env
     volumes:
-      - /home/ansible-user/github-runner/tmp:/tmp/github-runner
+      - /home/ansible-user/github-runner/home:/home/github-runner
     networks:
       - traefik
 

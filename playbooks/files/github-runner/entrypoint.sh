@@ -1,7 +1,10 @@
 #!/bin/bash
 set -e
 
-cd /tmp/github-runner
+cd /home/github-runner
+
+# Change secret permissions
+chmod 600 secrets/ssh-keys/*.key
 
 # Configure only if needed
 if [ ! -f ".runner" ]; then
