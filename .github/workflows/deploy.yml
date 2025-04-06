@@ -11,6 +11,16 @@ jobs:
       
       - name: Copy secrets
         run: cp -r /home/github-runner/secrets ./secrets
+
+      - name: Copy service secrets
+        run: |
+          for service in /home/service-secrets/*; do
+          if [ -d "$service" ]; then
+            service_name=$(basename "$service")
+            mkdir -p "files/$service_name"
+            cp -r "$service"/* "playbooks/files/$service_name/"
+          fi
+            done
           
       - name: Run setup
         run: make setup

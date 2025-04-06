@@ -7,10 +7,22 @@
     - Dockerfile
     - entrypoint.sh
 
-- name: Copy secrets files in
+- name: Copy github-runner secrets files in
   copy: 
     src: github-runner/secrets
     dest: /home/ansible-user/github-runner/home
+
+
+- name: Copy service secrets files in
+  copy: 
+    src: "{{ item }}/secrets"
+    dest: /home/ansible-user/github-runner/service-secrets/{{ item }}
+  loop:
+    - traefik
+    - portainer
+    - database
+    - scripts
+    - homepage
 
 - name: Remove github-runner
   shell: cd github-runner && docker compose down && docker compose rm

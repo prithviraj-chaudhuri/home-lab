@@ -9,6 +9,7 @@ services:
       - /home/ansible-user/github-runner/home/secrets/.env
     volumes:
       - /home/ansible-user/github-runner/home:/home/github-runner
+      - /home/ansible-user/github-runner/service-secrets:/home/service-secrets
     networks:
       - traefik
 
