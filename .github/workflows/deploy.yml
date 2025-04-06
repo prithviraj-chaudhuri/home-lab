@@ -6,16 +6,11 @@ jobs:
   run-playbook:
     runs-on: self-hosted
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          repository: prithviraj-chaudhuri/home-lab
-          fetch-depth: 0
-          path: /tmp
-
+      
       - name: Copy secrets
-        run: cp -r /home/github-runner/secrets /tmp/home-lab/
-
-      - name: Run make setup
-        working-directory: /tmp/home-lab
+        run: cp -r /home/github-runner/secrets ./secrets
+          
+      - name: Run setup
         run: make setup
