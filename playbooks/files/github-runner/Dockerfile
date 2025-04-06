@@ -3,6 +3,10 @@ FROM ubuntu:24.04
 # Set working directory
 WORKDIR /home/github-runner
 
+# Configure SSH to accept new host keys
+RUN mkdir -p /root/.ssh && \
+    echo "StrictHostKeyChecking=accept-new" >> /root/.ssh/config
+
 # Install dependencies
 RUN apt update -y && apt upgrade -y && apt install -y \
     curl jq libicu-dev python3 ansible openssh-client make
