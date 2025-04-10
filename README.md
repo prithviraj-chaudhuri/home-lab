@@ -1,3 +1,5 @@
+[![Deploy to Homelab](https://github.com/prithviraj-chaudhuri/home-lab/actions/workflows/deploy.yml/badge.svg)](https://github.com/prithviraj-chaudhuri/home-lab/actions/workflows/deploy.yml)
+
 # Home Lab Setup
 
 This repository contains Ansible playbooks and configurations to set up and manage services for your homelab. The playbooks automate the deployment of various services like Traefik, Portainer, Pi-hole, FileBrowser, GitHub Runner, and more.
