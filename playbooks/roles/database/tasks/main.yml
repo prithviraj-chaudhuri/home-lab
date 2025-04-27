@@ -16,6 +16,7 @@
     dest: /home/ansible-user/database/
   loop:
     - docker-compose.yml
+    - schema.sql
 
 - name: Remove database
   shell: cd database && docker compose down && docker compose rm

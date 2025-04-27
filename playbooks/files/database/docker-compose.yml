@@ -1,10 +1,11 @@
 services:
   postgres:
-    image: postgres:10
+    image: pgvector/pgvector:pg17
     container_name: postgres
     restart: always
     volumes:
       - /home/ansible-user/database/postgresql_data:/var/lib/postgresql
+      - /home/ansible-user/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - traefik
     ports:
