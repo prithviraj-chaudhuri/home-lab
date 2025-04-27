@@ -41,6 +41,10 @@
         icon: adminer.png
         href: https://adminer.eq-01.pi.hole/
         description: Adminer
+    - PGAdmin:
+        icon: pgadmin.png
+        href: https://pgadmin.eq-01.pi.hole/
+        description: PGAdmin
 
 # - Projects:
 #     - My Third Service:

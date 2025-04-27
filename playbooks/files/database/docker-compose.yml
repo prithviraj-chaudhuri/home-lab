@@ -18,6 +18,25 @@ services:
       - "traefik.tcp.routers.postgres.service=postgres"  
       - "traefik.tcp.services.postgres.loadbalancer.server.port=5432"
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    user: "0:0"
+    ports:
+      - "8888:8888"
+    env_file: .env
+    networks:
+      - traefik
+    volumes:
+      - /home/ansible-user/database/pgadmin-data:/var/lib/pgadmin
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.eq-01.pi.hole`)"
+      - "traefik.http.routers.pgadmin.entrypoints=websecure"
+      - "traefik.http.routers.pgadmin.service=pgadmin"
+      - "traefik.http.services.pgadmin.loadbalancer.server.port=8888"
+
   adminer:
     image: adminer:4.8.1
     container_name: adminer
