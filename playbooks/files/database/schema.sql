@@ -38,4 +38,7 @@
 --     embedding vector(1538) -- vector data
 -- );
 
+-- ALTER TABLE IF EXISTS public.documents
+--     ADD COLUMN metadata character varying(256);
+
 -- CREATE INDEX ON documents USING hnsw (embedding vector_cosine_ops);
