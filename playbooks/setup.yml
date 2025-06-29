@@ -43,3 +43,6 @@
     - role: github-runner
       tags:
         - github-runner
+    - role: gemini-cli
+      tags:
+        - gemini-cli

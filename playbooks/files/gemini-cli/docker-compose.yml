@@ -1,0 +1,16 @@
+services:
+  gemini-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gemini-cli
+    env_file:
+      - /home/ansible-user/gemini-cli/.env
+    volumes:
+      - /home/ansible-user/gemini-cli/app:/app
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true

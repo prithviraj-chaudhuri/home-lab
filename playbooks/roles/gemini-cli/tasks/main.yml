@@ -1,0 +1,22 @@
+- name: Copy gemini-cli files in
+  copy: 
+    src: gemini-cli/{{ item }}
+    dest: /home/ansible-user/gemini-cli/
+  loop:
+    - docker-compose.yml
+    - Dockerfile
+    - secrets/.env
+
+- name: Create directories {{ item }}
+  ansible.builtin.file:
+    path: /home/ansible-user/gemini-cli/{{ item }}
+    state: directory
+  loop:
+    - app
+
+- name: Remove gemini
+  shell: cd gemini-cli && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup gemini-cli
+  shell: cd gemini-cli && docker compose up -d
