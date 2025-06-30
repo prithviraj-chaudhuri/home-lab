@@ -23,6 +23,7 @@
     - database
     - scripts
     - homepage
+    - gemini-cli
 
 - name: Remove github-runner
   shell: cd github-runner && docker compose down && docker compose rm
