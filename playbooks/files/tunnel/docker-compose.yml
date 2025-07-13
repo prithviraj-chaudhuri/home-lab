@@ -1,0 +1,9 @@
+services:
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: tunnel
+    restart: unless-stopped
+    command: tunnel run
+    env_file:
+      - /home/ansible-user/tunnel/.env
+    network_mode: host

@@ -1,0 +1,14 @@
+- name: Copy tunnel files in
+  copy: 
+    src: tunnel/{{ item }}
+    dest: /home/ansible-user/tunnel/
+  loop:
+    - docker-compose.yml
+    - secrets/.env
+
+- name: Remove tunnel
+  shell: cd tunnel && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup tunnel
+  shell: cd tunnel && docker compose up -d
