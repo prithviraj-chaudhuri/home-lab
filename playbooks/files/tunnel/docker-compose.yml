@@ -5,5 +5,5 @@ services:
     restart: unless-stopped
     command: tunnel run
     env_file:
-      - /home/ansible-user/tunnel/.env
+      - .env
     network_mode: host
