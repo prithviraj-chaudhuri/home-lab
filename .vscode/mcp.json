@@ -1,0 +1,9 @@
+{
+	"servers": {
+		"postgres-mcp-eq01": {
+			"type": "sse",
+			"url": "https://postgres-mcp.eq-01.pi.hole/sse"
+		}
+	},
+	"inputs": []
+}

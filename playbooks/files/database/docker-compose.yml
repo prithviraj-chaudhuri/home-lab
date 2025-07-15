@@ -53,6 +53,27 @@ services:
       - "traefik.http.routers.adminer.service=adminer"
       - "traefik.http.services.adminer.loadbalancer.server.port=8080"
 
+  postgres-mcp:
+    image: crystaldba/postgres-mcp:latest
+    container_name: postgres-mcp
+    env_file:
+      - .env
+    command:
+      - "--access-mode=unrestricted"
+      - "--transport=sse"
+      # or use restricted mode:
+      # - "--access-mode=restricted"
+    ports:
+      - "8099:8000"
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.postgres-mcp.rule=Host(`postgres-mcp.eq-01.pi.hole`)"
+      - "traefik.http.routers.postgres-mcp.entrypoints=websecure"
+      - "traefik.http.routers.postgres-mcp.service=postgres-mcp"
+      - "traefik.http.services.postgres-mcp.loadbalancer.server.port=8000"
+
 networks:
   traefik:
     external: true
