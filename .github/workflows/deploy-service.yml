@@ -1,0 +1,36 @@
+name: Deploy Specific Service
+description: Deploy a specific service to Homelab
+
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Service to deploy (e.g., traefik, portainer, pihole, etc.)'
+        required: true
+        type: string
+
+jobs:
+  deploy-service:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Copy secrets
+        run: cp -r /home/github-runner/secrets ./secrets
+
+      - name: Copy service specific secrets
+        run: |
+          SERVICE_NAME="${{ github.event.inputs.service }}"
+          SERVICE_DIR="/home/service-secrets/$SERVICE_NAME"
+          
+          if [ -d "$SERVICE_DIR" ]; then
+            echo "Copying secrets for service: $SERVICE_NAME"
+            mkdir -p "playbooks/files/$SERVICE_NAME"
+            cp -r "$SERVICE_DIR"/* "playbooks/files/$SERVICE_NAME/"
+          else
+            echo "No service-specific secrets found for: $SERVICE_NAME"
+          fi
+      
+      - name: Run deployment for specific service
+        run: make tag-${{ github.event.inputs.service }}
