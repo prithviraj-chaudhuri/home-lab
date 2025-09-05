@@ -1,0 +1,9 @@
+  {
+    "mcp_servers": [
+      {
+        "name": "postgres-mcp-eq01",
+        "transport": "sse",
+        "url": "https://postgres-mcp.eq-01.pi.hole/sse"
+      }
+    ]
+  }

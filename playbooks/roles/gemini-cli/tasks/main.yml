@@ -5,6 +5,7 @@
   loop:
     - docker-compose.yml
     - Dockerfile
+    - settings.json
     - secrets/.env
 
 - name: Create directories {{ item }}

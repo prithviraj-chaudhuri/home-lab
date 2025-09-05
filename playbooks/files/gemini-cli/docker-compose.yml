@@ -8,6 +8,7 @@ services:
       - .env
     volumes:
       - /home/ansible-user/gemini-cli/app:/app
+      - /home/ansible-user/gemini-cli/settings.json:/etc/gemini-cli/settings.json
     networks:
       - traefik
 
