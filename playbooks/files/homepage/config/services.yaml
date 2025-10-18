@@ -5,45 +5,45 @@
 - Admin:
     - Portainer:
         icon: portainer.png
-        href: https://portainer.eq-01.pi.hole
+        href: https://portainer.prithvirajchaudhuri.com
         description: Docker container administration
     - Pihole:
         icon: pi-hole.png
-        href: https://pihole.eq-01.pi.hole/admin/login.php
+        href: https://pihole.prithvirajchaudhuri.com/admin/login.php
         description: DNS Service
     - Traefik:
         icon: traefik.png
-        href: https://traefik.eq-01.pi.hole/
+        href: https://traefik.prithvirajchaudhuri.com/
         description: Traefik
     - Filesbrowser:
         icon: filebrowser.png
-        href: https://filebrowser.eq-01.pi.hole/
+        href: https://filebrowser.prithvirajchaudhuri.com/
         description: Files
     - Grafana:
         icon: grafana.png
-        href: https://grafana.eq-01.pi.hole/
+        href: https://grafana.prithvirajchaudhuri.com/
         description: Grafana
 
 - Services:
     - Ollama:
         icon: ollama.png
-        href: https://ollama.eq-01.pi.hole/
+        href: https://ollama.prithvirajchaudhuri.com/
         description: Ollama service
     - Ollama UI:
         icon: open-webui-light.png
-        href: https://chat.eq-01.pi.hole/
+        href: https://chat.prithvirajchaudhuri.com/
         description: AI Chat
     - N8N:
         icon: n8n.png
-        href: https://n8n.eq-01.pi.hole/
+        href: https://n8n.prithvirajchaudhuri.com/
         description: N8N
     - Adminer:
         icon: adminer.png
-        href: https://adminer.eq-01.pi.hole/
+        href: https://adminer.prithvirajchaudhuri.com/
         description: Adminer
     - PGAdmin:
         icon: pgadmin.png
-        href: https://pgadmin.eq-01.pi.hole/
+        href: https://pgadmin.prithvirajchaudhuri.com/
         description: PGAdmin
 
 # - Projects:
