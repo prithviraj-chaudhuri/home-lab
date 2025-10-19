@@ -13,6 +13,11 @@
   loop:
     - data
 
+- name: Change mounted volume permissions
+  shell: chown -R 1000:1000 /home/ansible-user/keycloak/{{ item }} && chmod -R 755 /home/ansible-user/keycloak/{{ item }}
+  loop:
+    - data
+
 - name: Remove keycloak
   shell: cd keycloak && docker compose down && docker compose rm
   ignore_errors: yes
