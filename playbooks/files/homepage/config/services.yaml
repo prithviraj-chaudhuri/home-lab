@@ -23,6 +23,10 @@
         icon: grafana.png
         href: https://grafana.prithvirajchaudhuri.com/
         description: Grafana
+    - Keycloak:
+        icon: keycloak.png
+        href: https://keycloak.prithvirajchaudhuri.com/
+        description: Keycloak
 
 - Services:
     - Ollama:

@@ -19,6 +19,7 @@
     dest: /home/ansible-user/github-runner/service-secrets/{{ item }}
   loop:
     - traefik
+    - keycloak
     - portainer
     - database
     - scripts

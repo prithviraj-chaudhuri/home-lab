@@ -7,6 +7,9 @@
     - role: firewall
       tags:
       - firewall
+    - role: keycloak
+      tags:
+        - keycloak
     - role: docker
       tags:
       - docker

@@ -1,0 +1,21 @@
+- name: Copy keycloak files in
+  copy: 
+    src: keycloak/{{ item }}
+    dest: /home/ansible-user/keycloak/
+  loop:
+    - docker-compose.yml
+    - secrets/.env
+  
+- name: Create directories {{ item }}
+  ansible.builtin.file:
+    path: /home/ansible-user/keycloak/{{ item }}
+    state: directory
+  loop:
+    - data
+
+- name: Remove keycloak
+  shell: cd keycloak && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup keycloak
+  shell: cd keycloak && docker compose up -d
