@@ -12,6 +12,12 @@
     state: directory
   loop:
     - data
+    - data/import
+
+- name: Copy realm.json file to the volume
+  copy: 
+    src: keycloak/secrets/realm.json
+    dest: /home/ansible-user/keycloak/data/import
 
 - name: Change mounted volume permissions
   shell: chown -R 1000:1000 /home/ansible-user/keycloak/{{ item }} && chmod -R 755 /home/ansible-user/keycloak/{{ item }}
