@@ -15,6 +15,12 @@ services:
       - traefik
     volumes:
       - "/home/ansible-user/keycloak/data:/opt/keycloak/data"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.rule=Host(`keycloak.eq-01.pi.hole`)"
+      - "traefik.http.routers.keycloak.entrypoints=websecure"
+      - "traefik.http.routers.keycloak.service=keycloak"
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
 
 networks:
   traefik:
