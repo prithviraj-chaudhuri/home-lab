@@ -24,7 +24,6 @@
         href: https://grafana.prithvirajchaudhuri.com/
         description: Grafana
     - SSH:
-        icon: ssh.png
         href: https://ssh.prithvirajchaudhuri.com/
         description: SSH
 
