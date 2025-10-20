@@ -23,12 +23,16 @@
         icon: grafana.png
         href: https://grafana.prithvirajchaudhuri.com/
         description: Grafana
+    - SSH:
+        icon: ssh.png
+        href: https://ssh.prithvirajchaudhuri.com/
+        description: SSH
+
+- Services:
     - Keycloak:
         icon: keycloak.png
         href: https://keycloak.prithvirajchaudhuri.com/
         description: Keycloak
-
-- Services:
     - Ollama:
         icon: ollama.png
         href: https://ollama.prithvirajchaudhuri.com/
