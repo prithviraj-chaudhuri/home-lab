@@ -1,6 +1,5 @@
-version: "3.8"
 services:
-  wg-easy:
+  wiregaurd-server:
     image: ghcr.io/wg-easy/wg-easy
     container_name: wg-easy
     environment:
