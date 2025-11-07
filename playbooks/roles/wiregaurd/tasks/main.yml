@@ -1,0 +1,14 @@
+- name: Copy wiregaurd files in
+  copy: 
+    src: wiregaurd/{{ item }}
+    dest: /home/ansible-user/wiregaurd/
+  loop:
+    - docker-compose.yml
+    - secrets/.env
+
+- name: Remove wiregaurd
+  shell: cd wiregaurd && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup wiregaurd
+  shell: cd wiregaurd && docker compose up -d
