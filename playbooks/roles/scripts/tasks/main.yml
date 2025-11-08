@@ -16,7 +16,7 @@
 
 - name: Copy docker compose files in
   copy: 
-    src: scripts/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/scripts/{{ item }}
   loop:
     - categorize-gmail/docker-compose.yml

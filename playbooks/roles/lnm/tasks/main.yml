@@ -1,13 +1,12 @@
 - name: Copy grafana docker-compose.yml
   copy: 
-    src: lnm/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/lnm/
   loop:
     - docker-compose.yml
 
-- name: Remove lnm
-  shell: cd lnm && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup lnm
-  shell: cd lnm && docker compose up -d
+- name: Restart lnm service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "lnm"

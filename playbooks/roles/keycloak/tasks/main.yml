@@ -1,6 +1,6 @@
 - name: Copy keycloak files in
   copy: 
-    src: keycloak/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/keycloak/
   loop:
     - docker-compose.yml
@@ -16,7 +16,7 @@
 
 - name: Copy realm.json file to the volume
   copy: 
-    src: keycloak/secrets/realm.json
+    src: secrets/realm.json
     dest: /home/ansible-user/keycloak/data/import
 
 - name: Change mounted volume permissions
@@ -24,9 +24,8 @@
   loop:
     - data
 
-- name: Remove keycloak
-  shell: cd keycloak && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup keycloak
-  shell: cd keycloak && docker compose up -d
+- name: Restart keycloak service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "keycloak"

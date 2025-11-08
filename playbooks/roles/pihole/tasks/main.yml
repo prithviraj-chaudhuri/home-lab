@@ -1,6 +1,6 @@
 - name: Copy pihole docker-compose.yml
   copy: 
-    src: pihole/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/pihole/
   loop:
     - docker-compose.yml
@@ -19,9 +19,8 @@
     name: systemd-resolved
     state: restarted
 
-- name: Remove pihole
-  shell: cd pihole && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup pihole docker
-  shell: cd pihole && docker compose up -d
+- name: Restart pihole service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "pihole"

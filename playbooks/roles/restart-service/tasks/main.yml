@@ -1,0 +1,13 @@
+---
+- name: Ensure service_name is defined
+  assert:
+    that:
+      - service_name != ""
+    fail_msg: "You must provide 'service_name' when including restart-service role."
+
+- name: Remove {{ service_name }}
+  shell: cd {{ service_name }} && docker compose down && docker compose rm
+  ignore_errors: yes
+
+- name: Setup {{ service_name }}
+  shell: cd {{ service_name }} && docker compose up -d

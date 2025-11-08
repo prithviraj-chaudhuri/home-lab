@@ -1,6 +1,6 @@
 - name: Copy n8n files in
   copy: 
-    src: n8n/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/n8n/
   loop:
     - docker-compose.yml
@@ -19,9 +19,8 @@
     - n8n_data
     - saved_data
 
-- name: Remove n8n
-  shell: cd n8n && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup n8n
-  shell: cd n8n && docker compose up -d
+- name: Restart n8n service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "n8n"

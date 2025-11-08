@@ -1,6 +1,6 @@
 - name: Copy traefik files in
   copy: 
-    src: traefik/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/traefik/
   loop:
     - docker-compose.yml
@@ -21,7 +21,7 @@
 
 - name: Copy certs
   copy: 
-    src: traefik/secrets/certs/{{ item }}
+    src: secrets/certs/{{ item }}
     dest: /home/ansible-user/traefik/traefik_data/certs
   loop:
     - tls.crt
@@ -29,7 +29,7 @@
 
 - name: Copy traefik_dynamic.yml
   copy: 
-    src: traefik/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/traefik/traefik_data/dynamic
   loop:
     - traefik_dynamic.yml
@@ -38,9 +38,8 @@
   shell: docker network create traefik
   ignore_errors: yes
 
-- name: Remove traefik
-  shell: cd traefik && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup traefik
-  shell: cd traefik && docker compose up -d
+- name: Restart traefik service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "traefik"

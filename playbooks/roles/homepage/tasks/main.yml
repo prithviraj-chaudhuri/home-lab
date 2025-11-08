@@ -5,7 +5,7 @@
 
 - name: Copy config files in
   copy: 
-    src: homepage/config/{{ item }}
+    src: config/{{ item }}
     dest: /home/ansible-user/homepage/config
   loop:
     - services.yaml
@@ -14,21 +14,20 @@
 
 - name: Copy .env files in
   copy: 
-    src: homepage/secrets/{{ item }}
+    src: secrets/{{ item }}
     dest: /home/ansible-user/homepage/
   loop:
     - .env
   
 - name: Copy docker compose file
   copy: 
-    src: homepage/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/homepage/
   loop:
     - docker-compose.yml
 
-- name: Remove homepage
-  shell: cd homepage && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup homepage
-  shell: cd homepage && docker compose up -d
+- name: Restart homepage service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "homepage"

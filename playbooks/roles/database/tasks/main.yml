@@ -18,9 +18,8 @@
     - docker-compose.yml
     - schema.sql
 
-- name: Remove database
-  shell: cd database && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup database
-  shell: cd database && docker compose up -d
+- name: Restart database service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "database"
