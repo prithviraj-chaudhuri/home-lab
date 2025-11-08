@@ -1,7 +1,7 @@
 services:
   wiregaurd-server:
     image: ghcr.io/wg-easy/wg-easy
-    container_name: wg-easy
+    container_name: wiregaurd-server
     environment:
       - WG_HOST=wiregaurd.prithvirajchaudhuri.com
       - WG_PORT=51820

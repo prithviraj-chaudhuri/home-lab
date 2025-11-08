@@ -6,6 +6,13 @@
     - docker-compose.yml
     - secrets/.env
 
+- name: Create directories {{ item }}
+  ansible.builtin.file:
+    path: /home/ansible-user/wiregaurd/{{ item }}
+    state: directory
+  loop:
+    - data
+
 - name: Remove wiregaurd
   shell: cd wiregaurd && docker compose down && docker compose rm
   ignore_errors: yes
