@@ -52,6 +52,3 @@
     - role: tunnel
       tags:
         - tunnel
-    - role: wiregaurd
-      tags:
-        - wiregaurd
