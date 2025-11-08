@@ -5,52 +5,49 @@
 - Admin:
     - Portainer:
         icon: portainer.png
-        href: https://portainer.prithvirajchaudhuri.com
+        href: https://portainer.eq-01.pi.hole
         description: Docker container administration
     - Pihole:
         icon: pi-hole.png
-        href: https://pihole.prithvirajchaudhuri.com/admin/login.php
+        href: https://pihole.eq-01.pi.hole/admin/login.php
         description: DNS Service
     - Traefik:
         icon: traefik.png
-        href: https://traefik.prithvirajchaudhuri.com/
+        href: https://traefik.eq-01.pi.hole/
         description: Traefik
     - Filesbrowser:
         icon: filebrowser.png
-        href: https://filebrowser.prithvirajchaudhuri.com/
+        href: https://filebrowser.eq-01.pi.hole/
         description: Files
     - Grafana:
         icon: grafana.png
-        href: https://grafana.prithvirajchaudhuri.com/
+        href: https://grafana.eq-01.pi.hole/
         description: Grafana
-    - SSH:
-        href: https://ssh.prithvirajchaudhuri.com/
-        description: SSH
-
-- Services:
     - Keycloak:
         icon: keycloak.png
-        href: https://keycloak.prithvirajchaudhuri.com/
+        href: https://keycloak.eq-01.pi.hole/
         description: Keycloak
+
+- Services:
     - Ollama:
         icon: ollama.png
-        href: https://ollama.prithvirajchaudhuri.com/
+        href: https://ollama.eq-01.pi.hole/
         description: Ollama service
     - Ollama UI:
         icon: open-webui-light.png
-        href: https://chat.prithvirajchaudhuri.com/
+        href: https://chat.eq-01.pi.hole/
         description: AI Chat
     - N8N:
         icon: n8n.png
-        href: https://n8n.prithvirajchaudhuri.com/
+        href: https://n8n.eq-01.pi.hole/
         description: N8N
     - Adminer:
         icon: adminer.png
-        href: https://adminer.prithvirajchaudhuri.com/
+        href: https://adminer.eq-01.pi.hole/
         description: Adminer
     - PGAdmin:
         icon: pgadmin.png
-        href: https://pgadmin.prithvirajchaudhuri.com/
+        href: https://pgadmin.eq-01.pi.hole/
         description: PGAdmin
 
 # - Projects:
