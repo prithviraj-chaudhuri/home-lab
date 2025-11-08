@@ -5,14 +5,14 @@
 
 - name: Copy .env files in
   copy: 
-    src: database/secrets/{{ item }}
+    src: secrets/{{ item }}
     dest: /home/ansible-user/database/
   loop:
     - .env
   
 - name: Copy docker compose file
   copy: 
-    src: database/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/database/
   loop:
     - docker-compose.yml

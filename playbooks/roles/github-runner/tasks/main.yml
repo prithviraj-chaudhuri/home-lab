@@ -21,7 +21,7 @@
     - traefik
     - keycloak
     - portainer
-    - database
+    - service-database
     - scripts
     - homepage
     - gemini-cli
