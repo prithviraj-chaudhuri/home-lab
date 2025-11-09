@@ -5,22 +5,21 @@
 
 - name: Copy .env files in
   copy: 
-    src: database/secrets/{{ item }}
+    src: secrets/{{ item }}
     dest: /home/ansible-user/database/
   loop:
     - .env
   
 - name: Copy docker compose file
   copy: 
-    src: database/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/database/
   loop:
     - docker-compose.yml
     - schema.sql
 
-- name: Remove database
-  shell: cd database && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup database
-  shell: cd database && docker compose up -d
+- name: Restart database service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "database"

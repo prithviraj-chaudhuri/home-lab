@@ -4,6 +4,8 @@
   remote_user: ansible-user
   become: yes
   roles:
+
+    # Setup sshd as well
     - role: firewall
       tags:
       - firewall

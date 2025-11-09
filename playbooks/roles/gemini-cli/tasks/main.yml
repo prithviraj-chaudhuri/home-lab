@@ -1,6 +1,6 @@
 - name: Copy gemini-cli files in
   copy: 
-    src: gemini-cli/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/gemini-cli/
   loop:
     - docker-compose.yml
@@ -15,9 +15,8 @@
   loop:
     - app
 
-- name: Remove gemini
-  shell: cd gemini-cli && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup gemini-cli
-  shell: cd gemini-cli && docker compose up -d
+- name: Restart gemini-cli service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "gemini-cli"

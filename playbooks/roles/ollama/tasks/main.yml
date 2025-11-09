@@ -1,14 +1,13 @@
 - name: Copy ollama files in
   copy: 
-    src: ollama/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/ollama/
   loop:
     - docker-compose.yml
     - entrypoint.sh
 
-- name: Remove ollama
-  shell: cd ollama && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup ollama
-  shell: cd ollama && docker compose up -d
+- name: Restart ollama service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "ollama"

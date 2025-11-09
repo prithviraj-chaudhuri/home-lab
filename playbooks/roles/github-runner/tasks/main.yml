@@ -1,6 +1,6 @@
 - name: Copy github-runner files in
   copy: 
-    src: github-runner/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/github-runner/
   loop:
     - docker-compose.yml
@@ -9,13 +9,12 @@
 
 - name: Copy github-runner secrets files in
   copy: 
-    src: github-runner/secrets
+    src: secrets
     dest: /home/ansible-user/github-runner/home
-
 
 - name: Copy service secrets files in
   copy: 
-    src: "{{ item }}/secrets"
+    src: "../{{ item }}/files/secrets"
     dest: /home/ansible-user/github-runner/service-secrets/{{ item }}
   loop:
     - traefik
@@ -26,11 +25,9 @@
     - homepage
     - gemini-cli
     - tunnel
-    - wiregaurd
 
-- name: Remove github-runner
-  shell: cd github-runner && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup github-runner
-  shell: cd github-runner && docker compose up -d
+- name: Restart github-runner service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "github-runner"

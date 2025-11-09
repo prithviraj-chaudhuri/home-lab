@@ -1,14 +1,50 @@
+---
+- name: Ensure /etc/ssh directory exists
+  file:
+    path: /etc/ssh
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install Cloudflare CA public key
+  copy:
+    src: secrets/ca.pub
+    dest: /etc/ssh/ca.pub
+    owner: root
+    group: root
+    mode: "0644"
+    backup: yes
+  notify: reload ssh
+
+- name: Enable PubkeyAuthentication in sshd_config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PubkeyAuthentication'
+    line: 'PubkeyAuthentication yes'
+    state: present
+    backup: yes
+  notify: reload ssh
+
+- name: Set TrustedUserCAKeys in sshd_config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?TrustedUserCAKeys'
+    line: 'TrustedUserCAKeys /etc/ssh/ca.pub'
+    state: present
+    backup: yes
+  notify: reload ssh
+
 - name: Copy tunnel files in
   copy: 
-    src: tunnel/{{ item }}
+    src: "{{ item }}"
     dest: /home/ansible-user/tunnel/
   loop:
     - docker-compose.yml
     - secrets/.env
 
-- name: Remove tunnel
-  shell: cd tunnel && docker compose down && docker compose rm
-  ignore_errors: yes
-
-- name: Setup tunnel
-  shell: cd tunnel && docker compose up -d
+- name: Restart tunnel service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "tunnel"

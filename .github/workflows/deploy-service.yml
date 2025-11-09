@@ -26,8 +26,8 @@ jobs:
           
           if [ -d "$SERVICE_DIR" ]; then
             echo "Copying secrets for service: $SERVICE_NAME"
-            mkdir -p "playbooks/files/$SERVICE_NAME"
-            cp -r "$SERVICE_DIR"/* "playbooks/files/$SERVICE_NAME/"
+            mkdir -p "playbooks/roles/$SERVICE_NAME/files"
+            cp -r "$SERVICE_DIR"/* "playbooks/roles/$SERVICE_NAME/files"
           else
             echo "No service-specific secrets found for: $SERVICE_NAME"
           fi

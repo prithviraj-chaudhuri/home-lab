@@ -1,5 +1,5 @@
 setup:
-	ansible-playbook playbooks/setup.yml -i playbooks/hosts.yml --skip-tags "github-runner"
+	ansible-playbook playbooks/setup.yml -i playbooks/hosts.yml --skip-tags "github-runner,tunnel"
 
 tag-%:
 	ansible-playbook playbooks/setup.yml -i playbooks/hosts.yml --tags "$*"
