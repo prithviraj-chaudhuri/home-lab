@@ -22,7 +22,7 @@ jobs:
       - name: Copy service specific secrets
         run: |
           SERVICE_NAME="${{ github.event.inputs.service }}"
-          SERVICE_DIR="/home/github-runner/service-secrets/$SERVICE_NAME"
+          SERVICE_DIR="/home/service-secrets/$SERVICE_NAME"
           
           if [ -d "$SERVICE_DIR" ]; then
             echo "Copying secrets for service: $SERVICE_NAME"
