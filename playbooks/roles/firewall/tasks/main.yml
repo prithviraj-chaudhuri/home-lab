@@ -1,3 +1,9 @@
+- name: Install UFW
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+    update_cache: yes
+
 - name: Allow everything and enable UFW
   community.general.ufw:
     state: enabled

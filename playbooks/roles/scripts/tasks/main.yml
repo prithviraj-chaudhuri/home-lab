@@ -23,7 +23,7 @@
 
 - name: Copy categorize-gmail files in
   copy: 
-    src: scripts/secrets/categorize-gmail/{{ item }}
+    src: secrets/categorize-gmail/{{ item }}
     dest: /home/ansible-user/scripts/categorize-gmail/secrets
   loop:
     - credentials.json

@@ -9,12 +9,12 @@
 
 - name: Copy github-runner secrets files in
   copy: 
-    src: github-runner/secrets
+    src: secrets
     dest: /home/ansible-user/github-runner/home
 
 - name: Copy service secrets files in
   copy: 
-    src: "{{ item }}/files/secrets"
+    src: "../{{ item }}/files/secrets"
     dest: /home/ansible-user/github-runner/service-secrets/{{ item }}
   loop:
     - traefik
@@ -25,7 +25,6 @@
     - homepage
     - gemini-cli
     - tunnel
-    - wiregaurd
 
 - name: Restart github-runner service
   include_role:
