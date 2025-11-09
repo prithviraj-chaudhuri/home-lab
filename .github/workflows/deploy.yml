@@ -18,8 +18,8 @@ jobs:
           for service in /home/service-secrets/*; do
           if [ -d "$service" ]; then
             service_name=$(basename "$service")
-            mkdir -p "files/$service_name"
-            cp -r "$service"/* "playbooks/files/$service_name/"
+            mkdir -p "playbooks/$service_name/files"
+            cp -r "$service"/* "playbooks/$service_name/files"
           fi
             done
           
