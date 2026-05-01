@@ -3,6 +3,7 @@
     name: ufw
     state: present
     update_cache: yes
+    cache_valid_time: 3600
 
 - name: Allow everything and enable UFW
   community.general.ufw:

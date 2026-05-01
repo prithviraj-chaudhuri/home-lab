@@ -13,6 +13,7 @@
 - name: Apt update
   ansible.builtin.apt:
     update_cache: yes
+    cache_valid_time: 3600
 
 - name: Install ca-certificates and curl
   ansible.builtin.apt: 
@@ -34,15 +35,17 @@
 - name: Apt update
   ansible.builtin.apt:
     update_cache: yes
+    cache_valid_time: 3600
 
 - name: Install specific version of packages
   ansible.builtin.apt:
     name: "{{ item }}"
     state: present
     allow_downgrade: yes
+    cache_valid_time: 3600
   loop:
-    - docker-ce=5:27.2.0-1~ubuntu.24.04~noble
-    - docker-ce-cli=5:27.2.0-1~ubuntu.24.04~noble
+    - docker-ce
+    - docker-ce-cli
     - containerd.io
     - docker-buildx-plugin
     - docker-compose-plugin

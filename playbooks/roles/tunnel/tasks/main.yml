@@ -43,8 +43,5 @@
     - docker-compose.yml
     - secrets/.env
 
-- name: Restart tunnel service
-  include_role:
-    name: restart-service
-  vars:
-    service_name: "tunnel"
+- name: Restart tunnel
+  shell: cd tunnel && docker compose restart

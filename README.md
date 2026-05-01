@@ -56,8 +56,8 @@ Edit the playbooks/hosts.yml file to define your target machines. Example:
 ```controllers:
   hosts:
     EQ-homelab-01:
-      ansible_host: 10.0.0.163
-      ansible_ssh_private_key_file: ansible-user.controller.key
+      ansible_host: HOSTNAME
+      ansible_ssh_private_key_file: PRIVATE_KEY (Optional)
 ```
 
 ### 3. Add Secrets
