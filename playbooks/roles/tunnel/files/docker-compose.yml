@@ -6,4 +6,6 @@ services:
     command: tunnel run
     env_file:
       - .env
+    environment:
+      TUNNEL_TRANSPORT_PROTOCOL: http2
     network_mode: host
