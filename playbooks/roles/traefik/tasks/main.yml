@@ -19,13 +19,13 @@
     - certs
     - dynamic
 
-- name: Copy certs
-  copy: 
-    src: secrets/certs/{{ item }}
-    dest: /home/ansible-user/traefik/traefik_data/certs
-  loop:
-    - tls.crt
-    - tls.key
+- name: Create acme.json
+  ansible.builtin.file:
+    path: /home/ansible-user/traefik/traefik_data/certs/acme.json
+    state: touch
+    owner: root
+    group: root
+    mode: '0600'
 
 - name: Copy traefik_dynamic.yml
   copy: 
