@@ -8,18 +8,16 @@ services:
     volumes:
       - portainer_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/ansible-user/portainer/secrets/:/certs
     restart: always
-    command:
-      --sslcert /certs/tls.crt
-      --sslkey /certs/tls.key
     networks:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.eq-01.pi.hole`)"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.prithvirajchaudhuri.com`)"
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.service=portainer"
+      - "traefik.http.routers.portainer.tls=true"
+      - "traefik.http.routers.portainer.tls.certresolver=cloudflare"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 
 networks:

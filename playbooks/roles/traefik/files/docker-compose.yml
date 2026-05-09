@@ -20,6 +20,7 @@ services:
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
       - "--entryPoints.tcp.address=:5432"
+      - --entrypoints.websecure.http3=false
       # Cloudflare cert resolver
       - --certificatesresolvers.cloudflare.acme.dnschallenge=true
       - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
