@@ -41,11 +41,27 @@
   ansible.builtin.apt:
     name: "{{ item }}"
     state: present
-    allow_downgrade: yes
-    cache_valid_time: 3600
+    update_cache: yes
   loop:
     - docker-ce
     - docker-ce-cli
     - containerd.io
     - docker-buildx-plugin
     - docker-compose-plugin
+    
+- name: Configure Docker to support older API versions
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+        "min-api-version": "1.24"
+      }
+    mode: '0644'
+  notify: Restart docker
+
+- name: Ensure docker is started and enabled
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes
+

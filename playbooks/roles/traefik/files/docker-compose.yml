@@ -3,6 +3,8 @@ services:
     image: "traefik:v3.1"
     container_name: "traefik"
     restart: always
+    env_file:
+      .env
     command:
       - --global.sendAnonymousUsage=false
       - "--global.checknewversion=false"
@@ -12,13 +14,19 @@ services:
       - "--providers.docker.watch=true"
       - "--providers.docker.exposedbydefault=false"
       - "--providers.file.directory=/dynamic/"
-      - "--providers.docker.useBindPortIP=true"
       - "--entryPoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
       - "--entryPoints.tcp.address=:5432"
+      - --entrypoints.websecure.http3=false
+      # Cloudflare cert resolver
+      - --certificatesresolvers.cloudflare.acme.dnschallenge=true
+      - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53
+      - --certificatesresolvers.cloudflare.acme.email=${SSL_EMAIL}
+      - --certificatesresolvers.cloudflare.acme.storage=/conf/certs/acme.json
     ports:
       - "80:80"
       - "443:443"
@@ -31,9 +39,11 @@ services:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.eq-01.pi.hole`)"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.prithvirajchaudhuri.com`)"
       - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.service=traefik"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=cloudflare"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 
 networks:
