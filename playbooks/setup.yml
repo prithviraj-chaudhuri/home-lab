@@ -9,9 +9,6 @@
     - role: firewall
       tags:
       - firewall
-    - role: keycloak
-      tags:
-        - keycloak
     - role: docker
       tags:
       - docker
@@ -21,9 +18,6 @@
     - role: portainer
       tags:
       - portainer
-    - role: pihole
-      tags:
-      - pihole
     - role: filebrowser
       tags:
       - filebrowser
