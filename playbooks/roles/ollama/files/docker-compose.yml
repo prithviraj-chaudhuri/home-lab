@@ -13,9 +13,11 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.chat.rule=Host(`chat.eq-01.pi.hole`)"
+      - "traefik.http.routers.chat.rule=Host(`chat.prithvirajchaudhuri.com`)"
       - "traefik.http.routers.chat.entrypoints=websecure"
       - "traefik.http.routers.chat.service=chat"
+      - "traefik.http.routers.chat.tls=true"
+      - "traefik.http.routers.chat.tls.certresolver=cloudflare"
       - "traefik.http.services.chat.loadbalancer.server.port=8080"
 
   ollama:
