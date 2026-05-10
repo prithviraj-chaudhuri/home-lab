@@ -33,9 +33,11 @@ services:
       - /home/ansible-user/database/pgadmin-data:/var/lib/pgadmin
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.eq-01.pi.hole`)"
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.prithvirajchaudhuri.com`)"
       - "traefik.http.routers.pgadmin.entrypoints=websecure"
       - "traefik.http.routers.pgadmin.service=pgadmin"
+      - "traefik.http.routers.pgadmin.tls=true"
+      - "traefik.http.routers.pgadmin.tls.certresolver=cloudflare"
       - "traefik.http.services.pgadmin.loadbalancer.server.port=8888"
 
   adminer:
@@ -48,9 +50,11 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.adminer.rule=Host(`adminer.eq-01.pi.hole`)"
+      - "traefik.http.routers.adminer.rule=Host(`adminer.prithvirajchaudhuri.com`)"
       - "traefik.http.routers.adminer.entrypoints=websecure"
       - "traefik.http.routers.adminer.service=adminer"
+      - "traefik.http.routers.adminer.tls=true"
+      - "traefik.http.routers.adminer.tls.certresolver=cloudflare"
       - "traefik.http.services.adminer.loadbalancer.server.port=8080"
 
   postgres-mcp:
@@ -69,9 +73,11 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.postgres-mcp.rule=Host(`postgres-mcp.eq-01.pi.hole`)"
+      - "traefik.http.routers.postgres-mcp.rule=Host(`postgres-mcp.prithvirajchaudhuri.com`)"
       - "traefik.http.routers.postgres-mcp.entrypoints=websecure"
       - "traefik.http.routers.postgres-mcp.service=postgres-mcp"
+      - "traefik.http.routers.postgres.tls=true"
+      - "traefik.http.routers.postgres.tls.certresolver=cloudflare"
       - "traefik.http.services.postgres-mcp.loadbalancer.server.port=8000"
 
 networks:

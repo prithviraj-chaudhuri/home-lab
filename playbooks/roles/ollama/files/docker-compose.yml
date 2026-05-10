@@ -30,9 +30,11 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ollama.rule=Host(`ollama.eq-01.pi.hole`)"
+      - "traefik.http.routers.ollama.rule=Host(`ollama.prithvirajchaudhuri.com`)"
       - "traefik.http.routers.ollama.entrypoints=websecure"
       - "traefik.http.routers.ollama.service=ollama"
+      - "traefik.http.routers.ollama.tls=true"
+      - "traefik.http.routers.ollama.tls.certresolver=cloudflare"
       - "traefik.http.services.ollama.loadbalancer.server.port=11434"
     entrypoint: ["/usr/bin/bash", "/entrypoint.sh"]
 
