@@ -11,6 +11,12 @@ services:
     restart: always
     networks:
       - traefik
+    healthcheck:
+      test: ["CMD-SHELL", "cat /proc/net/tcp | grep -q '2328' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.rule=Host(`portainer.prithvirajchaudhuri.com`)"
@@ -19,6 +25,21 @@ services:
       - "traefik.http.routers.portainer.tls=true"
       - "traefik.http.routers.portainer.tls.certresolver=cloudflare"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+
+  portainer-init:
+    image: alpine:3.19
+    container_name: portainer-init
+    restart: "no"
+    depends_on:
+      portainer:
+        condition: service_healthy
+    networks:
+      - traefik
+    env_file:
+      - .env
+    entrypoint: ["/bin/sh", "/init.sh"]
+    volumes:
+      - ./init.sh:/init.sh:ro
 
 networks:
   traefik:

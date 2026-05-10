@@ -1,9 +1,11 @@
-- name: Copy portainer docker-compose.yml
+- name: Copy portainer files
   copy: 
     src: "{{ item }}"
     dest: /home/ansible-user/portainer/
   loop:
     - docker-compose.yml
+    - secrets/.env
+    - init.sh
 
 - name: Copy TLS Certs
   copy: 
