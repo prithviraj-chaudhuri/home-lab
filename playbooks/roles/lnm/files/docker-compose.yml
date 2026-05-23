@@ -12,9 +12,11 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.eq-01.pi.hole`)"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.prithvirajchaudhuri.com`)"
       - "traefik.http.routers.grafana.entrypoints=websecure"
       - "traefik.http.routers.grafana.service=grafana"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.routers.grafana.tls.certresolver=cloudflare"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
 
 networks:
