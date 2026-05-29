@@ -41,6 +41,14 @@
         icon: pgadmin.png
         href: https://pgadmin.prithvirajchaudhuri.com/
         description: PGAdmin
+    - MongoDB:
+        icon: mongodb.png
+        href: https://mongo.prithvirajchaudhuri.com/
+        description: MongoDB
+    - Langfuse:
+        icon: langfuse.png
+        href: https://langfuse.prithvirajchaudhuri.com/
+        description: Langfuse
 
 # - Projects:
 #     - My Third Service:
