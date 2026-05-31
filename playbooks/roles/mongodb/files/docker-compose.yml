@@ -1,11 +1,18 @@
 services:
   mongo1:
-    image: mongo:6
+    image: mongo:8
     hostname: mongo1
     container_name: mongo1
+    restart: unless-stopped
     ports:
-      - 27017:27017
-    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "localhost,mongo1"]
+      - "27017:27017"
+    command:
+      - mongod
+      - --replSet
+      - myReplicaSet
+      - --bind_ip_all
+    volumes:
+      - mongo1_data:/data/db
     networks:
       - traefik
     labels:
@@ -13,17 +20,24 @@ services:
       - "traefik.tcp.routers.mongo1.rule=HostSNI(`mongo1.prithvirajchaudhuri.com`)"
       - "traefik.tcp.routers.mongo1.entrypoints=websecure"
       - "traefik.tcp.routers.mongo1.service=mongo1"
-      - "traefik.tcp.routers.mongo1.tls=true"
+      - "traefik.tcp.routers.mongo1.tls=false"
       - "traefik.tcp.routers.mongo1.tls.certresolver=cloudflare"
       - "traefik.tcp.services.mongo1.loadbalancer.server.port=27017"
 
   mongo2:
-    image: mongo:6
+    image: mongo:8
     hostname: mongo2
     container_name: mongo2
+    restart: unless-stopped
     ports:
-      - 27018:27017
-    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "localhost,mongo2"]
+      - "27018:27017"
+    command:
+      - mongod
+      - --replSet
+      - myReplicaSet
+      - --bind_ip_all
+    volumes:
+      - mongo2_data:/data/db
     networks:
       - traefik
     labels:
@@ -31,17 +45,24 @@ services:
       - "traefik.tcp.routers.mongo2.rule=HostSNI(`mongo2.prithvirajchaudhuri.com`)"
       - "traefik.tcp.routers.mongo2.entrypoints=websecure"
       - "traefik.tcp.routers.mongo2.service=mongo2"
-      - "traefik.tcp.routers.mongo2.tls=true"
+      - "traefik.tcp.routers.mongo2.tls=false"
       - "traefik.tcp.routers.mongo2.tls.certresolver=cloudflare"
       - "traefik.tcp.services.mongo2.loadbalancer.server.port=27017"
 
   mongo3:
-    image: mongo:6
+    image: mongo:8
     hostname: mongo3
     container_name: mongo3
+    restart: unless-stopped
     ports:
-      - 27019:27017
-    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "localhost,mongo3"]
+      - "27019:27017"
+    command:
+      - mongod
+      - --replSet
+      - myReplicaSet
+      - --bind_ip_all
+    volumes:
+      - mongo3_data:/data/db
     networks:
       - traefik
     labels:
@@ -49,12 +70,12 @@ services:
       - "traefik.tcp.routers.mongo3.rule=HostSNI(`mongo3.prithvirajchaudhuri.com`)"
       - "traefik.tcp.routers.mongo3.entrypoints=websecure"
       - "traefik.tcp.routers.mongo3.service=mongo3"
-      - "traefik.tcp.routers.mongo3.tls=true"
+      - "traefik.tcp.routers.mongo3.tls=false"
       - "traefik.tcp.routers.mongo3.tls.certresolver=cloudflare"
       - "traefik.tcp.services.mongo3.loadbalancer.server.port=27017"
 
   mongosetup:
-    image: mongo:6
+    image: mongo:8
     depends_on:
       - mongo1
       - mongo2
@@ -64,18 +85,21 @@ services:
     volumes:
       - ./mongo_setup.sh:/mongo_setup.sh
     restart: "no"
-    entrypoint: [ "bash", "/mongo_setup.sh"]
+    entrypoint:
+      - bash
+      - /mongo_setup.sh
 
-  mongo-express:
-    image: mongo-express:latest
-    container_name: mongo-express
+  compass:
+    image: haohanyang/compass-web:latest
+    container_name: compass
+    restart: unless-stopped
     depends_on:
       - mongo1
     environment:
-      ME_CONFIG_MONGODB_URL: mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=myReplicaSet
-      ME_CONFIG_BASICAUTH: "false"
+      CW_MONGO_URI: mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=myReplicaSet
+      CW_ENABLE_SHELL: true
     ports:
-      - 8081:8081
+      - "8081:8080"
     networks:
       - traefik
     labels:
@@ -85,8 +109,33 @@ services:
       - "traefik.http.routers.mongo.service=mongo"
       - "traefik.http.routers.mongo.tls=true"
       - "traefik.http.routers.mongo.tls.certresolver=cloudflare"
-      - "traefik.http.services.mongo.loadbalancer.server.port=8081"
+      - "traefik.http.services.mongo.loadbalancer.server.port=8080"
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qdrant.rule=Host(`qdrant.prithvirajchaudhuri.com`)"
+      - "traefik.http.routers.qdrant.entrypoints=websecure"
+      - "traefik.http.routers.qdrant.tls=true"
+      - "traefik.http.routers.qdrant.tls.certresolver=cloudflare"
+      - "traefik.http.services.qdrant.loadbalancer.server.port=6333"
 
 networks:
   traefik:
     external: true
+
+volumes:
+  mongo1_data:
+  mongo2_data:
+  mongo3_data:
+  qdrant_storage:
