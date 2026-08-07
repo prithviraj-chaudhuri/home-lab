@@ -1,0 +1,38 @@
+---
+# cloudflare-dns-data.yml - Data-driven DNS management
+- name: Ensure all Cloudflare DNS records exist
+  vars:
+    cloudflare_api_token: "{{ lookup('env', 'CLOUDFLARE_API_TOKEN') }}"
+    domain: "{{ lookup('env', 'CLOUDFLARE_ZONE') }}"
+    cloudflare_ip: "{{ lookup('env', 'EQ01_IP_ADDRESS') }}"
+    cloudflare_primary_records:
+      - adminer
+      - chat
+      - eq01
+      - filebrowser
+      - grafana
+      - homepage
+      - langfuse
+      - mongo1
+      - mongo2
+      - mongo3
+      - mongo
+      - n8n
+      - ollama
+      - pgadmin
+      - portainer
+      - postgres-mcp
+      - qdrant
+      - traefik
+  block:
+    - name: Ensure primary Cloudflare DNS records exist
+      community.general.cloudflare_dns:
+        zone: "{{ domain }}"
+        record: "{{ item }}"
+        type: A
+        value: "{{ cloudflare_ip }}"
+        proxied: false
+        ttl: 1
+        api_token: "{{ cloudflare_api_token }}"
+        state: present
+      loop: "{{ cloudflare_primary_records }}"
