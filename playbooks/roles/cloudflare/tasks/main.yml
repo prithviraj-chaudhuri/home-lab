@@ -1,6 +1,6 @@
 ---
 # cloudflare-dns-data.yml - Data-driven DNS management
-- name: Ensure all Cloudflare DNS records exist
+- name: Ensure Cloudflare DNS records are clean and recreated
   vars:
     cloudflare_api_token: "{{ lookup('env', 'CLOUDFLARE_API_TOKEN') }}"
     domain: "{{ lookup('env', 'CLOUDFLARE_ZONE') }}"
@@ -25,7 +25,50 @@
       - qdrant
       - traefik
   block:
-    - name: Ensure primary Cloudflare DNS records exist
+    - name: Query Cloudflare zone ID
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones?name={{ domain }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ cloudflare_api_token }}"
+          Content-Type: "application/json"
+        return_content: yes
+      register: cloudflare_zone_query
+      failed_when: cloudflare_zone_query.status not in [200, 201] or
+        (cloudflare_zone_query.json.success is defined and not cloudflare_zone_query.json.success)
+
+    - name: Set Cloudflare zone ID
+      set_fact:
+        cloudflare_zone_id: "{{ cloudflare_zone_query.json.result[0].id }}"
+
+    - name: Query existing Cloudflare A records for each primary name
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones/{{ cloudflare_zone_id }}/dns_records?type=A&name={{ record_name }}.{{ domain }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ cloudflare_api_token }}"
+          Content-Type: "application/json"
+        return_content: yes
+      register: cloudflare_existing_records
+      loop: "{{ cloudflare_primary_records | unique }}"
+      loop_control:
+        loop_var: record_name
+        label: "{{ record_name }}"
+
+    - name: Delete existing Cloudflare A records for duplicate names
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones/{{ cloudflare_zone_id }}/dns_records/{{ item }}"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ cloudflare_api_token }}"
+          Content-Type: "application/json"
+        return_content: yes
+      loop: "{{ cloudflare_existing_records.results | map(attribute='json.result') | flatten | map(attribute='id') | list }}"
+      when: cloudflare_existing_records.results | map(attribute='json.result') | flatten | list | length > 0
+      loop_control:
+        label: "{{ item }}"
+
+    - name: Create primary Cloudflare DNS records
       community.general.cloudflare_dns:
         zone: "{{ domain }}"
         record: "{{ item }}"
@@ -35,4 +78,4 @@
         ttl: 1
         api_token: "{{ cloudflare_api_token }}"
         state: present
-      loop: "{{ cloudflare_primary_records }}"
+      loop: "{{ cloudflare_primary_records | unique }}"
