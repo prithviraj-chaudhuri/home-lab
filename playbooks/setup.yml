@@ -24,6 +24,9 @@
     - role: database
       tags:
       - database
+    - role: mongodb
+      tags:
+      - mongodb
     - role: lnm
       tags:
       - lnm
@@ -36,6 +39,9 @@
     - role: ollama
       tags:
       - ollama
+    - role: langfuse
+      tags:
+      - langfuse
     - role: homepage
       tags:
       - homepage

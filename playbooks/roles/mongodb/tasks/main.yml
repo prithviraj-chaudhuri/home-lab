@@ -1,0 +1,12 @@
+- name: Copy mongodb files in
+  copy: 
+    src: "{{ item }}"
+    dest: /home/ansible-user/mongodb/
+  loop:
+    - docker-compose.yml
+
+- name: Restart mongodb service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "mongodb"

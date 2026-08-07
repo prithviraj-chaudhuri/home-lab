@@ -1,0 +1,38 @@
+- name: Ensure git is installed
+  package:
+    name: git
+    state: present
+
+- name: Check if langfuse directory exists
+  ansible.builtin.stat:
+    path: /home/ansible-user/langfuse
+  register: langfuse_dir
+
+- name: Check if directory is empty
+  ansible.builtin.find:
+    paths: /home/ansible-user/langfuse
+    file_type: any
+  register: langfuse_contents
+  when: langfuse_dir.stat.exists
+
+- name: Clone Langfuse repository if missing or empty
+  ansible.builtin.git:
+    repo: "https://github.com/langfuse/langfuse.git"
+    dest: "/home/ansible-user/langfuse"
+    version: main
+    force: yes
+  when: >
+    not langfuse_dir.stat.exists
+    or (langfuse_contents.matched | default(0) == 0)
+
+- name: Copy and override docker-compose.yml
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: "/home/ansible-user/langfuse/docker-compose.yml"
+    force: yes
+
+- name: Restart langfuse service
+  include_role:
+    name: restart-service
+  vars:
+    service_name: "langfuse"
