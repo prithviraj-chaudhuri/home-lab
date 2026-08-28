@@ -1,0 +1,110 @@
+---
+# cloudflare-dns-data.yml - Data-driven DNS management
+- name: Ensure Cloudflare DNS records are clean and recreated
+  vars:
+    cloudflare_api_token: "{{ lookup('env', 'CLOUDFLARE_API_TOKEN') }}"
+    domain: "{{ lookup('env', 'CLOUDFLARE_ZONE') }}"
+    cloudflare_ip: "{{ lookup('env', 'EQ01_IP_ADDRESS') }}"
+    cloudflare_primary_records:
+      - adminer
+      - chat
+      - eq01
+      - filebrowser
+      - grafana
+      - homepage
+      - langfuse
+      - mongo1
+      - mongo2
+      - mongo3
+      - mongo
+      - n8n
+      - ollama
+      - pgadmin
+      - portainer
+      - postgres-mcp
+      - qdrant
+      - traefik
+  block:
+    - name: Query Cloudflare zone ID
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones?name={{ domain }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ cloudflare_api_token }}"
+          Content-Type: "application/json"
+        return_content: yes
+      register: cloudflare_zone_query
+      failed_when: cloudflare_zone_query.status not in [200, 201] or
+        (cloudflare_zone_query.json.success is defined and not cloudflare_zone_query.json.success)
+
+    - name: Set Cloudflare zone ID
+      set_fact:
+        cloudflare_zone_id: "{{ cloudflare_zone_query.json.result[0].id }}"
+
+    - name: Query existing Cloudflare A records for each primary name
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones/{{ cloudflare_zone_id }}/dns_records?type=A&name={{ record_name }}.{{ domain }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ cloudflare_api_token }}"
+          Content-Type: "application/json"
+        return_content: yes
+      register: cloudflare_existing_records
+      loop: "{{ cloudflare_primary_records | unique }}"
+      loop_control:
+        loop_var: record_name
+        label: "{{ record_name }}"
+
+    - name: Delete existing Cloudflare A records for duplicate names
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones/{{ cloudflare_zone_id }}/dns_records/{{ item }}"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ cloudflare_api_token }}"
+          Content-Type: "application/json"
+        return_content: yes
+      loop: "{{ cloudflare_existing_records.results | map(attribute='json.result') | flatten | map(attribute='id') | list }}"
+      when: cloudflare_existing_records.results | map(attribute='json.result') | flatten | list | length > 0
+      loop_control:
+        label: "{{ item }}"
+
+    - name: Create primary Cloudflare DNS records
+      community.general.cloudflare_dns:
+        zone: "{{ domain }}"
+        record: "{{ item }}"
+        type: A
+        value: "{{ cloudflare_ip }}"
+        proxied: false
+        ttl: 1
+        api_token: "{{ cloudflare_api_token }}"
+        state: present
+      loop: "{{ cloudflare_primary_records | unique }}"
+
+- name: Update Cloudflare tunnel connector CIDR
+  uri:
+    url: "https://api.cloudflare.com/client/v4/accounts/{{ cloudflare_account_id }}/network/connectors/{{ cloudflare_tunnel_id }}"
+    method: PATCH
+    headers:
+      Authorization: "Bearer {{ cloudflare_api_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      cidr: "{{ cloudflare_tunnel_cidr }}"
+    status_code: [200, 201, 204]
+    return_content: yes
+  vars:
+    cloudflare_api_token: "{{ lookup('env', 'CLOUDFLARE_API_TOKEN') }}"
+    cloudflare_account_id: "{{ lookup('env', 'CLOUDFLARE_ACCOUNT_ID') }}"
+    cloudflare_tunnel_id: "{{ lookup('env', 'CLOUDFLARE_TUNNEL_ID') }}"
+    cloudflare_tunnel_cidr: "{{ lookup('env', 'EQ01_IP_ADDRESS') }}/32"
+  delegate_to: localhost
+  connection: local
+  register: cloudflare_tunnel_cidr_update
+  when:
+    - lookup('env', 'CLOUDFLARE_API_TOKEN') | default('') | length > 0
+    - lookup('env', 'CLOUDFLARE_ACCOUNT_ID') | default('') | length > 0
+    - lookup('env', 'CLOUDFLARE_TUNNEL_ID') | default('') | length > 0
+    - lookup('env', 'EQ01_IP_ADDRESS') | default('') | length > 0
+  failed_when:
+    - cloudflare_tunnel_cidr_update.status not in [200, 201, 204]
+    - cloudflare_tunnel_cidr_update.json.success is defined and not cloudflare_tunnel_cidr_update.json.success

@@ -1,4 +1,13 @@
 ---
+- name: Cloudflare DNS management
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - cloudflare
+  roles:
+    - role: cloudflare
+
 - name: Setup Homelab
   hosts: controllers
   remote_user: ansible-user
