@@ -79,3 +79,32 @@
         api_token: "{{ cloudflare_api_token }}"
         state: present
       loop: "{{ cloudflare_primary_records | unique }}"
+
+- name: Update Cloudflare tunnel connector CIDR
+  uri:
+    url: "https://api.cloudflare.com/client/v4/accounts/{{ cloudflare_account_id }}/network/connectors/{{ cloudflare_tunnel_id }}"
+    method: PATCH
+    headers:
+      Authorization: "Bearer {{ cloudflare_api_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      cidr: "{{ cloudflare_tunnel_cidr }}"
+    status_code: [200, 201, 204]
+    return_content: yes
+  vars:
+    cloudflare_api_token: "{{ lookup('env', 'CLOUDFLARE_API_TOKEN') }}"
+    cloudflare_account_id: "{{ lookup('env', 'CLOUDFLARE_ACCOUNT_ID') }}"
+    cloudflare_tunnel_id: "{{ lookup('env', 'CLOUDFLARE_TUNNEL_ID') }}"
+    cloudflare_tunnel_cidr: "{{ lookup('env', 'EQ01_IP_ADDRESS') }}/32"
+  delegate_to: localhost
+  connection: local
+  register: cloudflare_tunnel_cidr_update
+  when:
+    - lookup('env', 'CLOUDFLARE_API_TOKEN') | default('') | length > 0
+    - lookup('env', 'CLOUDFLARE_ACCOUNT_ID') | default('') | length > 0
+    - lookup('env', 'CLOUDFLARE_TUNNEL_ID') | default('') | length > 0
+    - lookup('env', 'EQ01_IP_ADDRESS') | default('') | length > 0
+  failed_when:
+    - cloudflare_tunnel_cidr_update.status not in [200, 201, 204]
+    - cloudflare_tunnel_cidr_update.json.success is defined and not cloudflare_tunnel_cidr_update.json.success
