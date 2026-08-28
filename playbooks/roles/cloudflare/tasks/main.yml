@@ -80,31 +80,78 @@
         state: present
       loop: "{{ cloudflare_primary_records | unique }}"
 
-- name: Update Cloudflare tunnel connector CIDR
+- name: Create SSH Cloudflare tunnel DNS record
+  community.general.cloudflare_dns:
+    zone: "{{ lookup('env', 'CLOUDFLARE_ZONE') }}"
+    record: ssh
+    type: CNAME
+    value: "{{ lookup('env', 'CLOUDFLARE_TUNNEL_ID') }}.cfargotunnel.com"
+    proxied: true
+    ttl: 1
+    api_token: "{{ lookup('env', 'CLOUDFLARE_API_TOKEN') }}"
+    state: present
+  delegate_to: localhost
+  connection: local
+  when:
+    - lookup('env', 'CLOUDFLARE_API_TOKEN') | default('') | length > 0
+    - lookup('env', 'CLOUDFLARE_ZONE') | default('') | length > 0
+    - lookup('env', 'CLOUDFLARE_TUNNEL_ID') | default('') | length > 0
+
+- name: Query Cloudflare tunnel configuration
   uri:
-    url: "https://api.cloudflare.com/client/v4/accounts/{{ cloudflare_account_id }}/network/connectors/{{ cloudflare_tunnel_id }}"
-    method: PATCH
+    url: "https://api.cloudflare.com/client/v4/accounts/{{ cloudflare_account_id }}/cfd_tunnel/{{ cloudflare_tunnel_id }}/configurations"
+    method: GET
     headers:
       Authorization: "Bearer {{ cloudflare_api_token }}"
       Content-Type: "application/json"
-    body_format: json
-    body:
-      cidr: "{{ cloudflare_tunnel_cidr }}"
-    status_code: [200, 201, 204]
     return_content: yes
   vars:
     cloudflare_api_token: "{{ lookup('env', 'CLOUDFLARE_API_TOKEN') }}"
     cloudflare_account_id: "{{ lookup('env', 'CLOUDFLARE_ACCOUNT_ID') }}"
     cloudflare_tunnel_id: "{{ lookup('env', 'CLOUDFLARE_TUNNEL_ID') }}"
-    cloudflare_tunnel_cidr: "{{ lookup('env', 'EQ01_IP_ADDRESS') }}/32"
   delegate_to: localhost
   connection: local
-  register: cloudflare_tunnel_cidr_update
+  register: cloudflare_tunnel_configuration
   when:
     - lookup('env', 'CLOUDFLARE_API_TOKEN') | default('') | length > 0
     - lookup('env', 'CLOUDFLARE_ACCOUNT_ID') | default('') | length > 0
     - lookup('env', 'CLOUDFLARE_TUNNEL_ID') | default('') | length > 0
-    - lookup('env', 'EQ01_IP_ADDRESS') | default('') | length > 0
+    - lookup('env', 'CLOUDFLARE_ZONE') | default('') | length > 0
   failed_when:
-    - cloudflare_tunnel_cidr_update.status not in [200, 201, 204]
-    - cloudflare_tunnel_cidr_update.json.success is defined and not cloudflare_tunnel_cidr_update.json.success
+    - cloudflare_tunnel_configuration.status != 200
+    - cloudflare_tunnel_configuration.json.success is defined and not cloudflare_tunnel_configuration.json.success
+
+- name: Configure SSH Cloudflare tunnel published application
+  uri:
+    url: "https://api.cloudflare.com/client/v4/accounts/{{ cloudflare_account_id }}/cfd_tunnel/{{ cloudflare_tunnel_id }}/configurations"
+    method: PUT
+    headers:
+      Authorization: "Bearer {{ cloudflare_api_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      config: "{{ cloudflare_tunnel_configuration.json.result.config | combine({'ingress': cloudflare_tunnel_desired_ingress}, recursive=True) }}"
+    status_code: [200, 201]
+    return_content: yes
+  vars:
+    cloudflare_api_token: "{{ lookup('env', 'CLOUDFLARE_API_TOKEN') }}"
+    cloudflare_account_id: "{{ lookup('env', 'CLOUDFLARE_ACCOUNT_ID') }}"
+    cloudflare_tunnel_id: "{{ lookup('env', 'CLOUDFLARE_TUNNEL_ID') }}"
+    cloudflare_tunnel_ssh_hostname: "ssh.{{ lookup('env', 'CLOUDFLARE_ZONE') }}"
+    cloudflare_tunnel_existing_ingress: "{{ cloudflare_tunnel_configuration.json.result.config.ingress | default([]) }}"
+    cloudflare_tunnel_host_ingress: "{{ cloudflare_tunnel_existing_ingress | selectattr('hostname', 'defined') | rejectattr('hostname', 'equalto', cloudflare_tunnel_ssh_hostname) | list }}"
+    cloudflare_tunnel_fallback_ingress: "{{ cloudflare_tunnel_existing_ingress | rejectattr('hostname', 'defined') | list }}"
+    cloudflare_tunnel_ssh_ingress:
+      hostname: "{{ cloudflare_tunnel_ssh_hostname }}"
+      service: "ssh://localhost:22"
+    cloudflare_tunnel_desired_ingress: "{{ cloudflare_tunnel_host_ingress + [cloudflare_tunnel_ssh_ingress] + cloudflare_tunnel_fallback_ingress }}"
+  delegate_to: localhost
+  connection: local
+  register: cloudflare_tunnel_ssh_configuration
+  when:
+    - cloudflare_tunnel_configuration is not skipped
+    - cloudflare_tunnel_desired_ingress != cloudflare_tunnel_existing_ingress
+  changed_when: cloudflare_tunnel_ssh_configuration.json.result.config.ingress != cloudflare_tunnel_existing_ingress
+  failed_when:
+    - cloudflare_tunnel_ssh_configuration.status not in [200, 201]
+    - cloudflare_tunnel_ssh_configuration.json.success is defined and not cloudflare_tunnel_ssh_configuration.json.success

@@ -35,6 +35,28 @@
     backup: yes
   notify: reload ssh
 
+- name: Ensure sshd configuration drop-in directory exists
+  file:
+    path: /etc/ssh/sshd_config.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Restrict SSH forwarding for ansible user
+  copy:
+    dest: /etc/ssh/sshd_config.d/ansible-user.conf
+    content: |
+      Match User ansible-user
+          AllowTcpForwarding local
+          PermitOpen 127.0.0.1:*
+          X11Forwarding no
+          AllowAgentForwarding no
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload ssh
+
 - name: Copy tunnel files in
   copy: 
     src: "{{ item }}"
