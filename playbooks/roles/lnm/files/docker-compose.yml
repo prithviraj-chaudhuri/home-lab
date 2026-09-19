@@ -22,6 +22,45 @@ services:
       - "traefik.http.routers.grafana.tls.certresolver=cloudflare"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
 
+  grafana-mcp:
+    image: grafana/mcp-grafana:latest
+    container_name: grafana-mcp
+    restart: unless-stopped
+    env_file:
+      - .env
+    command:
+      - --transport
+      - streamable-http
+      - --address
+      - 0.0.0.0:8000
+      - --metrics
+      - --metrics-address
+      - 0.0.0.0:9090
+      - --healthz-address
+      - 0.0.0.0:9090
+      - --disable-write
+      - --allowed-hosts
+      - grafana.mcp.prithvirajchaudhuri.com
+    depends_on:
+      - grafana
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana-mcp.rule=Host(`grafana.mcp.prithvirajchaudhuri.com`)"
+      - "traefik.http.routers.grafana-mcp.entrypoints=websecure"
+      - "traefik.http.routers.grafana-mcp.service=grafana-mcp"
+      - "traefik.http.routers.grafana-mcp.tls=true"
+      - "traefik.http.routers.grafana-mcp.tls.certresolver=cloudflare"
+      - "traefik.http.services.grafana-mcp.loadbalancer.server.port=8000"
+      - "traefik.http.routers.grafana-mcp-health.rule=Host(`grafana.mcp.prithvirajchaudhuri.com`) && Path(`/healthz`)"
+      - "traefik.http.routers.grafana-mcp-health.entrypoints=websecure"
+      - "traefik.http.routers.grafana-mcp-health.priority=100"
+      - "traefik.http.routers.grafana-mcp-health.service=grafana-mcp-health"
+      - "traefik.http.routers.grafana-mcp-health.tls=true"
+      - "traefik.http.routers.grafana-mcp-health.tls.certresolver=cloudflare"
+      - "traefik.http.services.grafana-mcp-health.loadbalancer.server.port=9090"
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus

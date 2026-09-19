@@ -32,6 +32,14 @@ Before running the playbooks, ensure the following prerequisites are met:
 5. **Environment Variables**:
    - Add required secrets and environment variables to the `secrets/` directory (e.g., `.env` files for services).
 
+For the Grafana MCP server, create `playbooks/roles/lnm/files/secrets/.env` with a Grafana service-account token and a separate caller token:
+
+```dotenv
+GRAFANA_URL=http://grafana:3000
+GRAFANA_SERVICE_ACCOUNT_TOKEN=<grafana-service-account-token>
+MCP_GRAFANA_SERVER_TOKEN=<client-bearer-token>
+```
+
 ## Repository Structure
 
 - **`playbooks/`**: Contains the main Ansible playbooks and roles.

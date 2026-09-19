@@ -1,0 +1,25 @@
+cloudflare_zone_domain: "{{ lookup('env', 'CLOUDFLARE_ZONE') }}"
+
+# Public application records are also probed by the LNM blackbox exporter.
+cloudflare_public_records:
+  - adminer
+  - chat
+  - filebrowser
+  - grafana
+  - grafana.mcp
+  - homepage
+  - langfuse
+  - mongo
+  - n8n
+  - ollama
+  - pgadmin
+  - portainer
+  - postgres-mcp
+  - qdrant
+  - traefik
+
+cloudflare_additional_records:
+  - eq01
+  - mongo1
+  - mongo2
+  - mongo3

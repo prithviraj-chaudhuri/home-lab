@@ -14,7 +14,7 @@
         "name": "instance",
         "type": "query",
         "datasource": { "type": "prometheus", "uid": "Prometheus" },
-        "query": "label_values(probe_success, instance)",
+        "query": "label_values(probe_success{instance!~\".*\\\\.(?:$|/.*)\"}, instance)",
         "refresh": 2,
         "includeAll": true,
         "multi": true,
