@@ -31,6 +31,34 @@
     dest: "/home/ansible-user/langfuse/docker-compose.yml"
     force: yes
 
+- name: Copy .env file with Langfuse init credentials
+  ansible.builtin.copy:
+    src: secrets/.env
+    dest: "/home/ansible-user/langfuse/.env"
+    force: yes
+
+- name: Ensure Langfuse database and user exist
+  ansible.builtin.shell: |
+    set -a
+    . /home/ansible-user/langfuse/.env
+    set +a
+
+    if ! docker exec postgres psql -U "$POSTGRES_USER" -d postgres -tAc \
+      "SELECT 1 FROM pg_roles WHERE rolname = '$LANGFUSE_DATABASE_USER'" | grep -qx 1; then
+      docker exec postgres psql -U "$POSTGRES_USER" -d postgres -v ON_ERROR_STOP=1 -c \
+        "CREATE ROLE \"$LANGFUSE_DATABASE_USER\" LOGIN PASSWORD '$LANGFUSE_DATABASE_PASSWORD';"
+    fi
+
+    if ! docker exec postgres psql -U "$POSTGRES_USER" -d postgres -tAc \
+      "SELECT 1 FROM pg_database WHERE datname = 'langfuse'" | grep -qx 1; then
+      docker exec postgres psql -U "$POSTGRES_USER" -d postgres -v ON_ERROR_STOP=1 -c \
+        "CREATE DATABASE langfuse OWNER \"$LANGFUSE_DATABASE_USER\";"
+    fi
+  args:
+    executable: /bin/bash
+  register: langfuse_database
+  changed_when: "'CREATE ROLE' in langfuse_database.stdout or 'CREATE DATABASE' in langfuse_database.stdout"
+
 - name: Restart langfuse service
   include_role:
     name: restart-service
