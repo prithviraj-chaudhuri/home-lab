@@ -4,10 +4,13 @@ services:
     user: "0"
     container_name: grafana
     restart: unless-stopped
+    depends_on:
+      - prometheus
     ports:
      - '3000:3000'
     volumes:
       - /home/ansible-user/lnm/grafana:/var/lib/grafana
+      - /home/ansible-user/lnm/grafana-provisioning:/etc/grafana/provisioning
     networks:
       - traefik
     labels:
@@ -19,6 +22,47 @@ services:
       - "traefik.http.routers.grafana.tls.certresolver=cloudflare"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    depends_on:
+      - blackbox-exporter
+    volumes:
+      - /home/ansible-user/lnm/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - traefik
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    container_name: blackbox-exporter
+    restart: unless-stopped
+    volumes:
+      - /home/ansible-user/lnm/blackbox/blackbox.yml:/etc/blackbox_exporter/config.yml
+    networks:
+      - traefik
+
+  # Exposes per-container CPU/memory metrics for the containers managed via Portainer
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: cadvisor
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - traefik
+
 networks:
   traefik:
     external: true
+
+volumes:
+  prometheus_data:

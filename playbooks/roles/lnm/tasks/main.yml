@@ -1,9 +1,47 @@
+- name: Create lnm config directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /home/ansible-user/lnm/prometheus
+    - /home/ansible-user/lnm/blackbox
+    - /home/ansible-user/lnm/grafana-provisioning/datasources
+    - /home/ansible-user/lnm/grafana-provisioning/dashboards/json
+
 - name: Copy grafana docker-compose.yml
   copy: 
     src: "{{ item }}"
     dest: /home/ansible-user/lnm/
   loop:
     - docker-compose.yml
+
+- name: Copy prometheus config
+  copy:
+    src: prometheus/prometheus.yml
+    dest: /home/ansible-user/lnm/prometheus/prometheus.yml
+
+- name: Copy blackbox exporter config
+  copy:
+    src: blackbox/blackbox.yml
+    dest: /home/ansible-user/lnm/blackbox/blackbox.yml
+
+- name: Copy grafana datasource provisioning
+  copy:
+    src: grafana-provisioning/datasources/datasource.yml
+    dest: /home/ansible-user/lnm/grafana-provisioning/datasources/datasource.yml
+
+- name: Copy grafana dashboard provisioning
+  copy:
+    src: grafana-provisioning/dashboards/dashboard.yml
+    dest: /home/ansible-user/lnm/grafana-provisioning/dashboards/dashboard.yml
+
+- name: Copy grafana dashboard definitions
+  copy:
+    src: "grafana-provisioning/dashboards/json/{{ item }}"
+    dest: "/home/ansible-user/lnm/grafana-provisioning/dashboards/json/{{ item }}"
+  loop:
+    - blackbox-exporter.json
+    - container-metrics.json
 
 - name: Restart lnm service
   include_role:
