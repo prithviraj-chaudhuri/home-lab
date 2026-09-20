@@ -6,7 +6,7 @@ cloudflare_public_records:
   - chat
   - filebrowser
   - grafana
-  - grafana.mcp
+  - grafana-mcp
   - homepage
   - langfuse
   - mongo

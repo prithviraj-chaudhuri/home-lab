@@ -19,10 +19,6 @@
         icon: grafana.png
         href: https://grafana.prithvirajchaudhuri.com/
         description: Grafana
-    - Grafana MCP:
-        icon: grafana.png
-        href: https://grafana.mcp.prithvirajchaudhuri.com/
-        description: Grafana Model Context Protocol server
 
 - Services:
     - Ollama:

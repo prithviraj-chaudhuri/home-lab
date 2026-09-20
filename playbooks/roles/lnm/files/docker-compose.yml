@@ -40,20 +40,20 @@ services:
       - 0.0.0.0:9090
       - --disable-write
       - --allowed-hosts
-      - grafana.mcp.prithvirajchaudhuri.com
+      - grafana-mcp.prithvirajchaudhuri.com
     depends_on:
       - grafana
     networks:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.grafana-mcp.rule=Host(`grafana.mcp.prithvirajchaudhuri.com`)"
+      - "traefik.http.routers.grafana-mcp.rule=Host(`grafana-mcp.prithvirajchaudhuri.com`)"
       - "traefik.http.routers.grafana-mcp.entrypoints=websecure"
       - "traefik.http.routers.grafana-mcp.service=grafana-mcp"
       - "traefik.http.routers.grafana-mcp.tls=true"
       - "traefik.http.routers.grafana-mcp.tls.certresolver=cloudflare"
       - "traefik.http.services.grafana-mcp.loadbalancer.server.port=8000"
-      - "traefik.http.routers.grafana-mcp-health.rule=Host(`grafana.mcp.prithvirajchaudhuri.com`) && Path(`/healthz`)"
+      - "traefik.http.routers.grafana-mcp-health.rule=Host(`grafana-mcp.prithvirajchaudhuri.com`) && Path(`/healthz`)"
       - "traefik.http.routers.grafana-mcp-health.entrypoints=websecure"
       - "traefik.http.routers.grafana-mcp-health.priority=100"
       - "traefik.http.routers.grafana-mcp-health.service=grafana-mcp-health"
