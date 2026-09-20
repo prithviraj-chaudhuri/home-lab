@@ -8,3 +8,16 @@ modules:
       preferred_ip_protocol: "ip4"
       tls_config:
         insecure_skip_verify: false
+
+  # Streaming (SSE) endpoints never close their response body, so a GET
+  # probe hangs until the timeout and always reports probe_success=0 even
+  # though the initial status code is 200. Use HEAD instead.
+  http_2xx_head:
+    prober: http
+    timeout: 5s
+    http:
+      valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+      method: HEAD
+      preferred_ip_protocol: "ip4"
+      tls_config:
+        insecure_skip_verify: false

@@ -16,17 +16,26 @@ scrape_configs:
       - targets: ["cadvisor:8080"]
 
   # Probe every public application record managed by the Cloudflare role.
+  # SSE endpoints never close their response body, so they use the HEAD-based
+  # module (http_2xx_head) instead of the default GET-based one (http_2xx).
   - job_name: blackbox-http
     metrics_path: /probe
-    params:
-      module: [http_2xx]
     static_configs:
       - targets:
-{% for record in cloudflare_public_records %}
-          - https://{{ record }}.{{ cloudflare_zone_domain }}{% if record == 'grafana-mcp' %}/healthz{% endif %}{{ '\n' }}{% endfor %}
+{% for record in cloudflare_public_records %}{% if record != 'postgres-mcp' %}
+          - https://{{ record }}.{{ cloudflare_zone_domain }}{% if record == 'grafana-mcp' %}/healthz{% endif %}{{ '\n' }}{% endif %}{% endfor %}
+        labels:
+          probe_module: http_2xx
+      - targets:
+{% for record in cloudflare_public_records %}{% if record == 'postgres-mcp' %}
+          - https://{{ record }}.{{ cloudflare_zone_domain }}/sse{{ '\n' }}{% endif %}{% endfor %}
+        labels:
+          probe_module: http_2xx_head
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
+      - source_labels: [probe_module]
+        target_label: __param_module
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
