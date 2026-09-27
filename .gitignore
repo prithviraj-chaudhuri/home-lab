@@ -166,3 +166,4 @@ cython_debug/
 secrets
 
 .DS_Store
+.vscode/

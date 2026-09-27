@@ -76,9 +76,16 @@ services:
       - "traefik.http.routers.postgres-mcp.rule=Host(`postgres-mcp.prithvirajchaudhuri.com`)"
       - "traefik.http.routers.postgres-mcp.entrypoints=websecure"
       - "traefik.http.routers.postgres-mcp.service=postgres-mcp"
-      - "traefik.http.routers.postgres.tls=true"
-      - "traefik.http.routers.postgres.tls.certresolver=cloudflare"
+      - "traefik.http.routers.postgres-mcp.tls=true"
+      - "traefik.http.routers.postgres-mcp.tls.certresolver=cloudflare"
       - "traefik.http.services.postgres-mcp.loadbalancer.server.port=8000"
+      - "traefik.http.routers.postgres-mcp-sse.rule=Host(`postgres-mcp.prithvirajchaudhuri.com`) && Path(`/sse`)"
+      - "traefik.http.routers.postgres-mcp-sse.entrypoints=websecure"
+      - "traefik.http.routers.postgres-mcp-sse.priority=100"
+      - "traefik.http.routers.postgres-mcp-sse.service=postgres-mcp-sse"
+      - "traefik.http.routers.postgres-mcp-sse.tls=true"
+      - "traefik.http.routers.postgres-mcp-sse.tls.certresolver=cloudflare"
+      - "traefik.http.services.postgres-mcp-sse.loadbalancer.server.port=8000"
 
 networks:
   traefik:

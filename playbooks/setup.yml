@@ -3,6 +3,8 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  vars_files:
+    - vars/cloudflare.yml
   tags:
     - cloudflare
   roles:
@@ -12,6 +14,8 @@
   hosts: controllers
   remote_user: ansible-user
   become: yes
+  vars_files:
+    - vars/cloudflare.yml
   roles:
 
     # Setup sshd as well

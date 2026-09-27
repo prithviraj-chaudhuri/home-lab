@@ -2,7 +2,7 @@ setup:
 	ansible-playbook playbooks/setup.yml -i playbooks/hosts.yml --skip-tags "github-runner,tunnel,cloudflare"
 
 tag-%:
-	ansible-playbook playbooks/setup.yml -i playbooks/hosts.yml --tags "$*"
+	set -a && . secrets/cloudflare/.env && set +a && ansible-playbook playbooks/setup.yml -i playbooks/hosts.yml --tags "$*"
 
 runner:
 	ansible-playbook playbooks/setup.yml -i playbooks/hosts.yml --tags "github-runner"
